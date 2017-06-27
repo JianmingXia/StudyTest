@@ -1,2 +1,4 @@
 *_chunk
 *.pyc
+*node_modules*
+*bundle*
