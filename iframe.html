@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        iframe {
+            width: 1000px;
+            height: 600px;
+            margin: auto;
+            display: block;
+            border: 0px;
+        }
+    </style>
+</head>
+<body>
+    <div id="content"></div>
+    <script type="text/javascript">
+        function parseUrl(url) {
+            let url_data = {},
+                parmas, match, i,
+                urlReg = /[?&]([^=]*?)=([^&]*?)(?:(?=&)|(?=$))/g,
+                urlParamsReg = /[?&]([^=]*?)=([^&]*?)(?:(?=&)|(?=$))/;
+
+            match = (url || location.href).match(urlReg);
+
+            if (match) {
+                for (i = match.length - 1; i >= 0; i--) {
+                    parmas = match[i].match(urlParamsReg);
+                    url_data[parmas[1]] = parmas[2];
+                }
+            }
+
+            return url_data;
+        }
+
+        function addContent()
+        {
+            var url_data = parseUrl();
+            var objTo = document.getElementById('content')
+            var divtest = document.createElement("iframe");
+            divtest.src = "http://local.quqi.com/c/" + url_data.node_id + "?quqi_token=5a2d3b6e-c470-43cf-8764-0718c2a6ef4e&passport_id=2583"
+            objTo.appendChild(divtest)
+        }
+
+        addContent();
+    </script>
+</body>
+</html>
