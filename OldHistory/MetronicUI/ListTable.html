@@ -1,0 +1,80 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="table-scrollable">
+            <table class="table table-striped table-bordered table-advance table-hover">
+                <thead>
+                <tr>
+                    <th style='text-align: center;'>
+                        客服ID
+                    </th>
+                    <th style='text-align: center;'>
+                        客服名称
+                    </th>
+                    <th style='text-align: center;'>
+                        客服昵称
+                    </th>
+                    <th style='text-align: center;'>
+                        游戏
+                    </th>
+                    <th style='text-align: center;'>
+                        操作
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php if (!empty($kefu_game_list)): foreach ($kefu_game_list as $key=>$game_id_list) : ?>
+                <tr align="center">
+                    <td><?php echo $key?></td>
+                    <td><?php echo $kefu_info_list[$key]['kefu_truename']; ?></td>
+                    <td><?php echo $kefu_info_list[$key]['kefu_nickname']; ?></td>
+                    <td>
+                        <?php if (!empty($game_id_list)): foreach ($game_id_list as $game_id) : ?>
+                        <?php if($game_id > 0) echo $game_info_list[$game_id]['game_name'] . ','; ?>
+                        <?php endforeach;
+                            else: ?>
+                        无
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <button type="button" class="btn green btn-xs edit_kefu" kefu_id=<?php echo $key;?>
+                        kefu_truename=<?php echo $kefu_info_list[$key]['kefu_truename']; ?>
+                        kefu_nickname=<?php echo $kefu_info_list[$key]['kefu_nickname']; ?> >编辑 </button>
+                    </td>
+                </tr>
+                <?php endforeach;
+                else: ?>
+                <tr>
+                    <td colspan=4 align="center">未查询到相关结果</td>
+                </tr>
+                <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+<!--<script>-->
+    <!--$(function(){-->
+        <!--submitGameConfigList();-->
+    <!--});-->
+<!--</script>-->
+<!--<script>-->
+    <!--//在前一个页面加载-->
+    <!--function submitGameConfigList(){-->
+        <!--$.ajax( {-->
+            <!--url:'/gameconfig/index?type=list',// 跳转到 action-->
+            <!--data: '',-->
+            <!--type:'post',-->
+            <!--cache:false,-->
+            <!--dataType:'text',-->
+            <!--success:function(data) {-->
+                <!--$("#kefu_list_table").html(data);-->
+            <!--},-->
+            <!--error : function() {-->
+                <!--alertErrorTip('服务器出错！');-->
+            <!--}-->
+        <!--});-->
+    <!--}-->
+<!--</script>-->

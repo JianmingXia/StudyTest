@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #btn_control_music_play{
+            margin-top: 5px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 40px;
+            height: 40px;
+            background:url(http://image.ledu.com/h5_activity/mhjzg/audio_play.png) 0 0 no-repeat;
+            background-size: cover;
+            border: 0px;
+        }
+
+        .icon-spin {
+            -moz-animation: spin 2s infinite linear;
+            -o-animation: spin 2s infinite linear;
+            -webkit-animation: spin 2s infinite linear;
+            animation: spin 2s infinite linear;
+        }
+        @-moz-keyframes spin {
+            0% { -moz-transform: rotate(0deg); }
+            100% { -moz-transform: rotate(360deg); }
+        }
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+        @-o-keyframes spin {
+            0% { -o-transform: rotate(0deg); }
+            100% { -o-transform: rotate(360deg); }
+        }
+        @-ms-keyframes spin {
+            0% { -ms-transform: rotate(0deg); }
+            100% { -ms-transform: rotate(360deg); }
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
+
+    <title></title>
+</head>
+<body>
+<div>
+    <button type="button" class="btn-lg icon-spin" id="btn_control_music_play"> </button>
+</div>
+
+
+</body>
+</html>

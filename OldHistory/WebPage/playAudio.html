@@ -1,0 +1,74 @@
+<audio preload="preload" id="car_audio" src="/音频路径" loop=""></audio>
+
+
+<script>
+    //播放音频
+
+
+//    setTimeout(function(){
+//        $(window).scrollTop(1);
+//    },0);
+
+    /*音乐*/
+    function playAudio(keep_playing) {
+        var audio = $('#car_audio');
+        if (audio.attr('src') == undefined) {
+            audio.attr('src', audio.data('src'));
+        }
+
+        if(keep_playing){
+            //保持播放
+            if(audio[0].paused){
+                audio[0].play();
+            }
+        }else{
+            //切换播放/暂停
+            if(audio[0].paused){
+                audio[0].play();
+            } else {
+                audio[0].pause();
+            }
+        }
+    }
+
+    $(function(){
+        playAudio(true);
+
+        //微信浏览器
+        document.addEventListener("WeixinJSBridgeReady", function () {
+            WeixinJSBridge.invoke('getNetworkType', {}, function (e) {
+                network = e.err_msg.split(":")[1];  //结果在这里
+                playAudio(true);
+            });
+        }, false);
+    })
+
+</script>
+
+
+<script>
+    //定量播放
+    function playAudio() {
+        if($("#is_play").val() == 1){
+            var audio = $('#car_audio');
+            if (audio.attr('src') == undefined) {
+                audio.attr('src', audio.data('src'));
+            }
+
+            audio[0].play();
+
+            window.setTimeout(function(){setStopAudio();}, 2000);
+        }
+    }
+
+    function setStopAudio()
+    {
+        var audio = $('#car_audio');
+
+        if (audio.attr('src') == undefined) {
+            audio.attr('src', audio.data('src'));
+        }
+
+        audio[0].loop = false;
+    }
+</script>

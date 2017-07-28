@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+
+<div id="new_kefu_Modal" class="modal fade in" tabindex="-1" kefu="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title" id="new_kefu_Modal_title">新增</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal"  id="new_kefu_form">
+                    <input id='new_kefu_id' name="new_kefu_id" type='hidden' />
+                    <div class="form-group">
+                        <div class="row ">
+                            <div class="col-md-12">
+                                <label class="col-md-4 control-label" >客服名称：</label>
+                                <select class="form-control input-small select2me" name="add_kefu_id" id="add_kefu_id"
+                                        data-placeholder="请添加客服" tabindex="-1" title="">
+                                </select>
+                                <!--<select id="platform_id" name="platform_id" class="form-control select2me input-small" data-placeholder="Select..." tabindex="-1" title="">-->
+                                    <!--{foreach $platform_info as $platform}-->
+                                    <!--<option value="{$platform.platform_id}">-->
+                                        <!--{$platform.platform_name}</option>-->
+                                    <!--{/foreach}-->
+                                <!--</select>-->
+                            </div>
+                            <div class="col-md-12">
+                                <label class="col-md-4 control-label" >客服昵称：</label>
+                                <input class="form-control form-control-inline input-small" placeholder="请填写昵称" id="add_kefu_nickname" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="col-md-4 control-label" >游戏：</label>
+                                <select  id="add_game_id" name="add_game_id" data-placeholder="请添加游戏" class="form-control select2 input-medium" multiple>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button id='confirm_new_kefu' class="btn blue" type="button" >确认新增</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<script>
+    //ajax请求对控件进行赋值
+    $('#new_kefu_config').bind('click',function(){
+        $.ajax( {
+            url:'/gameconfig/newKefu',// 跳转到 action
+            data: '',
+            type:'post',
+            cache:false,
+            dataType:'json',
+            success:function(data) {
+                $("#new_kefu_Modal").modal("show");
+                $("#add_kefu_nickname").val("");
+
+                $("#add_kefu_id option").each(function(){
+                    $(this).remove();
+                });
+
+                $.each(data.kefu_list, function (i, n) {
+                    $("#add_kefu_id").append($("<option/>").text(n.kefu_truename).attr("value", i));
+                });
+
+                $("#add_game_id option").each(function(){
+                    $(this).remove();
+                });
+                $.each(data.game_info_list, function (i, n) {
+                    $("#add_game_id").append($("<option/>").text(n.game_name).attr("value", i));
+                });
+                $("#add_kefu_id").val("");
+                $("#add_game_id").val("");
+
+                //初始赋值
+//                $.each(data.added_game, function () {
+//                    var game_id = this;
+//                    $("#edit_game option").each(function(i,n){
+//                        if(Number($(n).val())==game_id)
+//                        {
+//                            $(n).attr("selected",true);
+//                        }
+//                    });
+//                });
+//                var v = data.added_game;
+//                $("#edit_game").val(v);
+
+                $("#add_game_id").select2();
+            },
+            error : function() {
+                alertErrorTip('服务器出错！');
+            }
+        });
+    });
+</script>
+</body>
+</html>

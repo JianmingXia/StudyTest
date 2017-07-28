@@ -1,0 +1,22 @@
+{
+    "name": "ryoma/temp",
+    "description": "just for test",
+    "keywords": ["temp"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ryoma",
+            "email": "xiajianming@joyport.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Ryoma\\temp\\": "src/"
+        }
+    }
+}

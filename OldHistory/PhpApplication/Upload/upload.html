@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+
+<a href="javascript:;" class="tupian">图片</a>
+<input id="fileupload" type="file" name="files" style="display:none" accept=".gif,.png,.jpg,bmp">
+
+
+<script type="text/javascript" src="source/js/upload/jquery.fileupload.js"></script>
+<script>
+    //引用fileupload.js
+
+    //图片上传
+    $('#fileupload').fileupload({
+        autoUpload: true,//是否自动上传
+        url: 'monitor/uploadPic',//上传地址
+        dataType: 'json',
+        acceptFileTypes:  /(\.|\/)(gif|jpe?g|png)$/i,
+        done: function (e, data) {//设置回调函数
+            if(data.result.err == 1){
+                alert(data.result.msg);
+            }else{
+                var serviceId = KefuChat.getCurrentServiceId();
+                var imageurl = '<img src="'+data.result.data.data+'">';
+                if(KefuChat.canSendMsg()){
+                    KefuIMSdk.sendMsg(serviceId,imageurl);
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>
