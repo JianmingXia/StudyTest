@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <ul>
+    <li><a href="#/" class="button button-glow button-border button-rounded button-primary">turn white</a></li>
+    <li><a href="#/orange" class="button button-glow button-rounded button-highlight">turn orange</a></li>
+    <li><a href="#/purple" class="button button-glow button-rounded button-royal">turn purple</a></li>
+  </ul>
+
+  <script>
+    (function (window) {
+      debugger;
+      // 如果浏览器原生支持该事件,则退出  
+      if ("onhashchange" in window.document.body) {
+        return;
+      }
+
+      var location = window.location,
+        oldURL = location.href,
+        oldHash = location.hash;
+
+      // 每隔100ms检测一下location.hash是否发生变化
+      setInterval(function () {
+        var newURL = location.href,
+          newHash = location.hash;
+
+        // 如果hash发生了变化,且绑定了处理函数...
+        if (newHash != oldHash && typeof window.onhashchange === "function") {
+          console.log(newURL);
+          // execute the handler
+          window.onhashchange({
+            type: "hashchange",
+            oldURL: oldURL,
+            newURL: newURL
+          });
+
+          oldURL = newURL;
+          oldHash = newHash;
+        }
+      }, 100);
+
+    })(window);
+
+    window.onhashchange = function() {
+      debugger;
+      console.log(location.href);
+    }
+  </script>
+</body>
+
+</html>
