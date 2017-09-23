@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>观察者模式</title>
 </head>
- 
+
 <body>
     <script>
         var Event = {
@@ -33,6 +33,14 @@
                 }
             }
         };
+        
+        Event.on('test', function (result) {
+            console.log(result);
+        });
+        Event.on('test', function () {
+            console.log('test');
+        });
+        Event.emit('test', 'hello world'); // 输出 'hello world' 和 'test'
 
         var person1 = {};
         var person2 = {};
