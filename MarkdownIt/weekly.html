@@ -1,4 +1,4 @@
-<p>#【工作周报】 趣企技术中心-平台开发-夏见明-2017.08.07</p>
+<p>#【工作周报】 趣企技术中心-平台开发-夏见明-2017.11.20</p>
 <h2>本周工作进展</h2>
 <table>
 <thead>
@@ -10,14 +10,39 @@
 </thead>
 <tbody>
 <tr>
-<td>PC端缩略图</td>
-<td>本周</td>
-<td>本周三</td>
+<td>Nginx log分片</td>
+<td>周二</td>
+<td>周二</td>
 </tr>
 <tr>
-<td>移动端缩略图</td>
-<td>本周</td>
-<td>按时完成</td>
+<td>Auth启动优化</td>
+<td>周二</td>
+<td>周二</td>
+</tr>
+<tr>
+<td>团队版不加密</td>
+<td>周三</td>
+<td>周三</td>
+</tr>
+<tr>
+<td>Nginx log 清除n天之前log</td>
+<td>周四</td>
+<td>周四</td>
+</tr>
+<tr>
+<td>删除任务（任务或子任务有其它成员）的提示</td>
+<td>周四</td>
+<td>周四</td>
+</tr>
+<tr>
+<td>曲奇办公&amp;云盘 分项目，根据quqi_id进入指定路由</td>
+<td>周五</td>
+<td>根据优先级周五切换到其它任务（周四确定了以后的云盘及办公公共功能的更新方式，简易的demo确认了可行性）</td>
+</tr>
+<tr>
+<td>跨团队目录复制&amp;批量复制</td>
+<td>下周一</td>
+<td>进度正常</td>
 </tr>
 </tbody>
 </table>
@@ -31,8 +56,12 @@
 </thead>
 <tbody>
 <tr>
-<td>缩略图</td>
-<td>本周的主要工作在做缩略图相关，首先是PC端：<br>1.PC端在缩略图查看情况下需要修改的东西较多：①缩略图的布局（由于底层部分功能目前不支持，拓展了webix底层，新增了两个属性）②鼠标悬浮、鼠标右键这些事件，之前写的代码与目前的布局有很大关系，所以只能在每个功能的基础上拓展的去修改。<br>其次是移动端：<br>2.移动端首先是不怎么熟悉，移动端目前的规则也都是大神在把控。在做移动端这块的时候也咨询了大神，在移动端之前的页面布局，很多使用了virtualList，当数据变化后，可以使用虚拟列表的方法来更新数据。但F7适用缩略图预览的组件只有grid，没有其它的方法去更新数据，只能通过直接去操作dom。</td>
+<td>Nginx log分片 &amp; 清除n天之前log</td>
+<td>脚本可传入四个参数：<br>①：nginx路径；<br>②：存储log日志的目录<br>③：pid文件名称，默认是nginx.pid；<br>④：清除n天前的日志，默认是14，使用-mtime +n，实际清除的是15天前的log<br>分片步骤：<br>①：确认存储log日志的目录会被创建；<br>②：清除日志；<br>③：迁移日志；<br>④：重新生成日志</td>
+</tr>
+<tr>
+<td>Auth启动优化</td>
+<td>上周先在AuthServer加了详细log，周一在重启后分析了Auth启动主要花费的时间：<br>①：Passport加载——28s；<br>②：Company加载——7s ；<br>③：ding user加载——7s<br>仔细看了下AuthServer的代码，Passport及Company加载速度较慢的原因是在每次加载code时需要进行一次sql查询，目前两者的速度分别在5w及4k左右，时间主要花费在sql查询上；Ding user加载速度则主要在取出DingUser对应的DingCompany时，使用了ForEach，这部分花费的太多时间。优化之后，AuthServer启动时间5s。</td>
 </tr>
 </tbody>
 </table>
@@ -47,7 +76,7 @@
 </thead>
 <tbody>
 <tr>
-<td>5.3.2bug处理</td>
+<td>跨团队目录复制 &amp; 批量复制</td>
 <td>重要</td>
 <td>紧急</td>
 </tr>

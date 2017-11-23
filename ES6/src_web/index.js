@@ -1,8 +1,18 @@
-let x = do {
-  let t = 22;
-  t * t + 1;
-};
-console.log(x);
+var foo = () => {
+  console.log(this.id);
+}
+
+var id = 1;
+
+foo(); // 输出1
+
+foo.call({ id: 2 }); // 输出1
+
+// let x = do {
+//   let t = 22;
+//   t * t + 1;
+// };
+// console.log(x);
 
 // function f() { console.log('I am outside!'); }
 //
