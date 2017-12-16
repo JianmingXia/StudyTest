@@ -4,3 +4,4 @@
 *bundle*
 *hyperapp-todomvc*
 dist_web/
+*package-lock.json
