@@ -1,7 +1,8 @@
 {
   "private": true,
   "scripts": {
-
+    "start": "roadhog server",
+    "build": "roadhog build"
   },
   "engines": {
     "install-node": "6.11.1"
