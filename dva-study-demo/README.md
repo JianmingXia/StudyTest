@@ -1,0 +1,1 @@
+- https://github.com/dvajs/dva-docs/blob/master/v1/zh-cn/getting-started.md
