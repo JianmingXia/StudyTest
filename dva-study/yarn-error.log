@@ -1,0 +1,58 @@
+Arguments: 
+  D:\Install\NodeJs\node.exe C:\Users\Administrator\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add antd
+
+PATH: 
+  C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;D:\Xampp\php;C:\ProgramData\ComposerSetup\bin;D:\Install\Svn\bin;C:\Program Files\Microsoft\Web Platform Installer\;C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Pages\v1.0\;D:\Install\python-3.6.1-embed-amd64;C:\Program Files\Microsoft SQL Server\110\Tools\Binn\;%QUQI_ROOT%\server\server-common-lib\lib;"%NIREUS_CPP98%\%NIREUS_VERSION%\NireusAppBase\include;";D:\Git\cmd;D:\Install\TortoiseGit\bin;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;D:\Install\NodeJs\;C:\Users\Administrator\AppData\Local\Programs\Python\Python36\Scripts\;C:\Users\Administrator\AppData\Local\Programs\Python\Python36\;C:\Ruby23-x64\bin;C:\Users\Administrator\AppData\Roaming\Composer\vendor\bin;C:\Users\Administrator\AppData\Local\Microsoft\WindowsApps;E:\GitQuqi\server\server-common-lib\lib;D:\Install\python-3.6.1-embed-amd64;D:\Install\Cmder;C:\Users\Administrator\AppData\Local\atom\bin;D:\Install\Microsoft VS Code\bin;C:\Users\Administrator\AppData\Local\Programs\EmEditor;C:\Users\Administrator\AppData\Local\Microsoft\WindowsApps;C:\Users\Administrator\AppData\Roaming\npm
+
+Yarn version: 
+  1.3.2
+
+Node version: 
+  6.12.2
+
+Platform: 
+  win32 x64
+
+npm manifest: 
+  {
+    "private": true,
+    "scripts": {
+      "start": "roadhog server",
+      "build": "roadhog build",
+      "lint": "eslint --ext .js src test",
+      "precommit": "npm run lint"
+    },
+    "engines": {
+      "install-node": "6.11.1"
+    },
+    "dependencies": {
+      "babel-runtime": "^6.9.2",
+      "dva": "^2.1.0",
+      "react": "^15.4.0",
+      "react-dom": "^15.4.0"
+    },
+    "devDependencies": {
+      "babel-eslint": "^7.1.1",
+      "babel-plugin-dva-hmr": "^0.3.2",
+      "babel-plugin-transform-runtime": "^6.9.0",
+      "eslint": "^3.12.2",
+      "eslint-config-airbnb": "^13.0.0",
+      "eslint-plugin-import": "^2.2.0",
+      "eslint-plugin-jsx-a11y": "^2.2.3",
+      "eslint-plugin-react": "^6.8.0",
+      "expect": "^1.20.2",
+      "husky": "^0.12.0",
+      "redbox-react": "^1.4.3",
+      "roadhog": "^1.2.1"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
+
+Trace: 
+  Error: ENOENT: no such file or directory, open 'E:\StudyTest\dva-study\node_modules\react-dev-utils\node_modules\ansi-regex\index.js'
+      at Error (native)
