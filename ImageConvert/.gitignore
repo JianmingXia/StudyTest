@@ -1,0 +1,14 @@
+ipch/
+obj/
+*.opensdf
+*.sdf
+*.suo
+*.vcxproj.user
+*.exe
+*.ilk
+*.pdb
+bin/*.bsc
+bin/*.exe
+bin/*.ilk
+bin/*.pdb
+.vs/

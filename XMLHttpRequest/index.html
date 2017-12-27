@@ -22,6 +22,23 @@
                 }
             }
         };
+        xhr.open('POST', 'http://local.quqi.com/task/person/searchContacts', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send('search_content=159');
+
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                console.log(xhr);
+                if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+                    // 成功：处理 xhr.responseText 
+                } else {
+                    // 失败
+                }
+            }
+        };
         xhr.open('POST', 'http://local.quqi.com/task/person/getContacts', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.send();
@@ -55,9 +72,26 @@
                 }
             }
         };
-        xhr.open('POST', 'http://local.quqi.com/task/api/forwardTaskToken', true);
+        xhr.open('POST', 'http://local.quqi.com/task/api/getTaskToken', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.send('task_id=2617&time=1500000000');
+
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                console.log(xhr);
+                if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+                    // 成功：处理 xhr.responseText 
+                } else {
+                    // 失败
+                }
+            }
+        };
+        xhr.open('POST', 'http://local.quqi.com/task/api/inviteMember', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send('task_id=3858&time=1500000000&inviter_passport_id=3790&token=');
 
 
         var xhr = new XMLHttpRequest();
@@ -269,29 +303,71 @@
         };
         xhr.send(JSON.stringify(data));
 
+        var xhr = new XMLHttpRequest();
 
-        var quqi_ids = "809866,472711";
-        var quqi_id_arr = quqi_ids.split(",");
-
-        var length = quqi_id_arr.length;
-        for(var i = 0; i < length; i++)
-        {
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4) {
-                    console.log(xhr);
-                    if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
-                        // 成功：处理 xhr.responseText 
-                    } else {
-                        // 失败
-                    }
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                console.log(xhr);
+                if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+                    // 成功：处理 xhr.responseText 
+                } else {
+                    // 失败
                 }
-            };
-            xhr.open('POST', '/api/notify/system_notify_send', true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.send('receiver_type=team&receiver_desc=统一发送数据可忽略此消息&quqi_id=' + quqi_id_arr[i] + '&title=这是标题&content=这是内容&url=');
-        }
+            }
+        };
+        xhr.open('POST', 'http://local.quqi.com//task/api/transferTaskAdmin', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send('task_id=3836&new_admin_passport_id=3790');
 
+        var xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                console.log(xhr);
+                if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+                    // 成功：处理 xhr.responseText 
+                } else {
+                    // 失败
+                }
+            }
+        };
+        xhr.open('POST', 'http://local.quqi.com//task/api/setChildTaskShow', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send('task_id=3836&is_show=0');
+
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                console.log(xhr);
+                if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+                    // 成功：处理 xhr.responseText
+                } else {
+                    // 失败
+                }
+            }
+        };
+        xhr.open('POST', 'http://local.quqi.com//task/api/treeTasks', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send('task_id=3858&depth=1');
+
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                console.log(xhr);
+                if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+                    // 成功：处理 xhr.responseText
+                } else {
+                    // 失败
+                }
+            }
+        };
+        xhr.open('POST', 'http://local.quqi.com//task/api/setChildTaskSort', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send('task_id=3858&child_task_ids=1');
     </script>
 
 </body>
