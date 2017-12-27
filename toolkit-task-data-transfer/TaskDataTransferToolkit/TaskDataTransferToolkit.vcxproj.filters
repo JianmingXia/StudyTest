@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="PreCompiled.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Setting.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="TaskRelayDB.cpp">
+      <Filter>DBManager</Filter>
+    </ClCompile>
+    <ClCompile Include="TaskDB.cpp">
+      <Filter>DBManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Task.cpp">
+      <Filter>TaskManager</Filter>
+    </ClCompile>
+    <ClCompile Include="TaskManager.cpp">
+      <Filter>TaskManager</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PreCompiled.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Setting.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskRelayDB.h">
+      <Filter>DBManager</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskDB.h">
+      <Filter>DBManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Task.h">
+      <Filter>TaskManager</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskManager.h">
+      <Filter>TaskManager</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Common">
+      <UniqueIdentifier>{6716df3e-15cc-4ea8-a4d6-433614e66eee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DBManager">
+      <UniqueIdentifier>{0543ba4c-979a-42ff-84b5-ef0e052880b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TaskManager">
+      <UniqueIdentifier>{53ad1eac-0a43-4bc3-92f0-739f0da4ce5f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,14 @@
+bin/*.bsc
+bin/*.exe
+bin/*.ilk
+bin/*.pdb
+ipch/
+obj/
+*.opensdf
+*.sdf
+*.v11.suo
+*.suo
+*.VC.db
+TaskDataTransferToolkit/*.vcxproj.user
+.vs/
+bin/
