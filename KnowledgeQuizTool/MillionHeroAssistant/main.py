@@ -88,7 +88,6 @@ def main():
         print("\n".join(answers))
 
         search_question = analyze_keyword_from_question(question)
-        print (search_question)
 
         weight_li, final, index = calculate_relation(search_question, answers)
         min_member = min(weight_li)

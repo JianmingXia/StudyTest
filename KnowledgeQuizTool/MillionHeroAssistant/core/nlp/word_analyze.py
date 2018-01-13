@@ -3,7 +3,7 @@
 
 import multiprocessing
 import platform
-
+import re  
 import jieba
 import jieba.analyse
 
@@ -53,13 +53,31 @@ def analyze_keyword_from_question(question):
     :param question:
     :return:
     """
-    question = pre_process_question(question)
-    main_keywords = jieba.analyse.extract_tags(
-        question,
-        topK=20,
-        withWeight=False,
-        allowPOS=Noun_flags
-    )
-    print ("main_keywords")
-    print (main_keywords)
-    return " ".join(main_keywords)
+
+    if len(question) > 38:
+        question = pre_process_question(question)
+        main_keywords = jieba.analyse.extract_tags(
+            question,
+            topK=20,
+            withWeight=False,
+            allowPOS=Noun_flags
+        )
+        # print ("main_keywords")
+        # print (main_keywords)
+
+        word = u'《'  
+        left_book_title = [m.start() for m in re.finditer(word, question)]  
+        word = u'》'  
+        right_book_title = [m.start() for m in re.finditer(word, question)] 
+
+        book_title = (min(len(left_book_title), len(right_book_title)))
+        if book_title > 0:
+            print ("book_title")
+            print (left_book_title)
+            print (right_book_title)
+            main_keywords.insert(0, question[(left_book_title[0] + 1):right_book_title[0]])
+
+        return " ".join(main_keywords)
+    else:
+        return question
+    
