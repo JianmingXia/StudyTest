@@ -15,7 +15,7 @@ from PIL import Image
 from shutil import copyfile
 
 
-def analyze_current_screen_text(directory=".", compress_level=1):
+def analyze_current_screen_text(answer_num, directory=".", compress_level=1):
     """
     capture the android screen now
 
@@ -25,7 +25,7 @@ def analyze_current_screen_text(directory=".", compress_level=1):
     screenshot_filename = "screenshot.png"
     save_text_area = os.path.join(directory, "text_area.png")
     capture_screen(screenshot_filename, directory)
-    parse_answer_area(os.path.join(directory, screenshot_filename), save_text_area, compress_level)
+    parse_answer_area(os.path.join(directory, screenshot_filename), save_text_area, compress_level, answer_num)
     return get_area_data(save_text_area)
 
 
@@ -52,7 +52,7 @@ def save_screen(filename="screenshot.png", directory="."):
              os.path.join(directory, datetime.now().strftime("%m%d_%H%M").join(os.path.splitext(filename))))
 
 
-def parse_answer_area(source_file, text_area_file, compress_level):
+def parse_answer_area(source_file, text_area_file, compress_level, answer_num):
     """
     crop the answer area
     :return:
@@ -66,7 +66,7 @@ def parse_answer_area(source_file, text_area_file, compress_level):
     wide = image.size[0]
     print("screen width: {0}, screen height: {1}".format(image.size[0], image.size[1]))
 
-    region = image.crop((70, 200, wide - 70, 1200))
+    region = image.crop((70, 200, wide - 70, 680 + answer_num * 160))
     region.save(text_area_file)
 
 

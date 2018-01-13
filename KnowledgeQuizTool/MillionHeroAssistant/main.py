@@ -25,6 +25,7 @@ from core.nlp.word_analyze import analyze_keyword_from_question
 from core.ocr.baiduocr import get_text_from_image as bai_get_text
 from core.utils import save_question_answers_to_file, number_normalize
 
+import sys
 
 def parse_args():
     parser = ArgumentParser(description="Million Hero Assistant")
@@ -37,14 +38,14 @@ def parse_args():
     return parser.parse_args()
 
 
-def parse_question_and_answer(text_list):
+def parse_question_and_answer(text_list, answer_num):
     question = ""
     start = 0
     length = len(text_list)
     
     for i, keyword in enumerate(text_list):
         question += keyword
-        if ("?" in keyword) or (i + 3 >= length - 1):
+        if ("?" in keyword) or (i + answer_num >= length - 1):
             start = i + 1
             break
 
@@ -64,9 +65,10 @@ def main():
         api_version=api_version,
         timeout=timeout)
 
-    def __inner_job():
+    def __inner_job(answer_num):
         start = time.time()
         text_binary = analyze_current_screen_text(
+            answer_num,
             directory=data_directory,
             compress_level=image_compress_level[0]
         )
@@ -78,7 +80,7 @@ def main():
             print("text not recognize")
             return
 
-        question, answers = parse_question_and_answer(keywords)
+        question, answers = parse_question_and_answer(keywords, answer_num)
 
         answers = answers[:3]
 
@@ -124,14 +126,17 @@ def main():
 
         print("""
             请在答题开始前就运行程序，
-            答题开始的时候按Enter预测答案
+            答题开始的时候按Enter预测答案（输入2-4位选项，默认3个选项）
         """)
 
         enter = input("按Enter键开始，按ESC键退出...")
         if enter == chr(27):
             break
+        answer_num = 3
+        if len(enter) > 0 and int(enter) >= 2 and int(enter) <= 4:
+            answer_num = int(enter)
         try:
-            __inner_job()
+            __inner_job(answer_num)
         except Exception as e:
             print(str(e))
 
