@@ -66,7 +66,10 @@ def parse_answer_area(source_file, text_area_file, compress_level, answer_num):
     wide = image.size[0]
     print("screen width: {0}, screen height: {1}".format(image.size[0], image.size[1]))
 
-    region = image.crop((70, 200, wide - 70, 680 + answer_num * 160))
+    # 西瓜视频-百万英雄
+    region = image.crop((70, 200, wide - 70, 780 + answer_num * 198))
+    
+    # region = image.crop((70, 250, wide - 70, 680 + answer_num * 160))
     region.save(text_area_file)
 
 

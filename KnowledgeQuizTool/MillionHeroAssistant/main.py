@@ -26,6 +26,7 @@ from core.ocr.baiduocr import get_text_from_image as bai_get_text
 from core.utils import save_question_answers_to_file, number_normalize
 
 import sys
+import webbrowser
 
 def parse_args():
     parser = ArgumentParser(description="Million Hero Assistant")
@@ -43,6 +44,14 @@ def parse_question_and_answer(text_list, answer_num):
     start = 0
     length = len(text_list)
     
+    # 假设问题最多三行
+    print ("text_list")
+    if length  > answer_num + 3:
+        length = answer_num + 3
+        text_list = text_list[:length]
+
+    print (text_list)
+
     for i, keyword in enumerate(text_list):
         question += keyword
         if ("?" in keyword) or (i + answer_num >= length - 1):
@@ -83,6 +92,7 @@ def main():
         question, answers = parse_question_and_answer(keywords, answer_num)
 
         answers = answers[:3]
+        webbrowser.open('https://baidu.com/s?wd='+question)
 
         print('-' * 72)
         print(question)
