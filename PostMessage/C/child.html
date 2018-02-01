@@ -1,0 +1,41 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>子页面</title>
+    <script type="text/JavaScript">
+        function sendIt() {
+            // 子页面给父页面传输信息 
+            var parent_url = getParentUrl();
+
+            parent.postMessage(
+                {
+                    "type": "save"
+                },
+                parent_url
+            );
+        }
+
+        function getParentUrl() { 
+            var url = null; 
+            if (parent !== window) { 
+                try {
+                    url = parent.location.href; 
+                } 
+                catch (e) 
+                { 
+                    url = document.referrer; 
+                } 
+            }
+
+            return url; 
+        }
+    </script>
+</head>
+
+<body>
+    <input type="text" id="message" />
+    <input type="button" value="Send to parent" onclick="sendIt()" />
+</body>
+
+</html>

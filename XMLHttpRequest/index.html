@@ -368,6 +368,42 @@
         xhr.open('POST', 'http://local.quqi.com//task/api/setChildTaskSort', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.send('task_id=3858&child_task_ids=1');
+
+
+
+
+
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                console.log(xhr);
+                if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+                    // 成功：处理 xhr.responseText
+                } else {
+                    // 失败
+                }
+            }
+        };
+        xhr.open('POST', 'http://file.quqi.com/api/picture/compositeAvatar', true);
+        var data = [
+            {
+                "avatar_url": "https://cdn2.quqi.com/perpetual/EF8776164982157179E2F6CDAFF0F45D.JPEG"
+            },
+            {
+                "avatar_url": "https://cdn2.quqi.com/perpetual/EDFC81907896265E1759714621254B8B.JPEG"
+            },
+            {
+                "avatar_url": "https://cdn2.quqi.com/perpetual/C42A27D13CB7AD17FBE9A56B75742268.JPEG"
+            },
+            {
+                "avatar_url": "https://cdn2.quqi.com/perpetual/4D0A043B703C71683FBB48AA83C0F81A.JPEG"
+            }
+        ];
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send("avatar_infos=" + JSON.stringify(data));
+
     </script>
 
 </body>

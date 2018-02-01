@@ -1,0 +1,14 @@
+# quqi_session
+
+## 新增表
+
+```
+CREATE TABLE `sys_session` (
+  `passport_id` int(11) NOT NULL,
+  `type` int(10) NOT NULL COMMENT '1pc,2ding,3app,4wechat,5sdk',
+  `quqi_id` int(11) NOT NULL DEFAULT '0',
+  `session_key` varchar(255) DEFAULT NULL,
+  `ip` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`passport_id`,`type`,`quqi_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+```

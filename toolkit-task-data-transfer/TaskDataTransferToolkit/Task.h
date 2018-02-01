@@ -28,6 +28,7 @@ public :
 	void setParent(Task* parent);
 	void addChild(Task* task);
 
+	void checkMember();
 	void getChildTaskMembers(Int32Vector& member_ids);
 	void mergeChildTaskMembers(Int32Vector& member_ids);
 	void getChildTaskIds(Int64Vector& task_ids);

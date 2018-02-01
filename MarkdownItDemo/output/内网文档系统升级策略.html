@@ -1,0 +1,94 @@
+<p>[TOC]</p>
+<h1>升级策略</h1>
+<h2>功能取舍</h2>
+<ul>
+<li>只迁移曲奇办公，html-quqi页面微调</li>
+<li>FrontEndServer不发布，避免无效请求，nginx配置减少</li>
+<li>当前草稿不做兼容，提醒做好备份</li>
+<li>有新人需要使用内网文档，暂定后台数据库添加用户，内网可以秒启</li>
+</ul>
+<h2>时间预估（2018-01-10开始）</h2>
+<ul>
+<li>前期准备工作：已完成</li>
+<li>数据库升级： 2天</li>
+<li>开发调试： 2天
+<ul>
+<li>各个server启动</li>
+<li>功能取舍部分</li>
+<li>nginx配置</li>
+<li>及时修正数据库</li>
+</ul>
+</li>
+<li>发布（模拟发布、内网发布）：1天</li>
+</ul>
+<h2>开发/调试/预发布阶段</h2>
+<h3>准备阶段</h3>
+<ul>
+<li>数据库升级
+<ul>
+<li>整理与内网有差异的数据库进行升级</li>
+<li>剩下数据库进行覆盖升级</li>
+</ul>
+</li>
+<li>nginx配置</li>
+</ul>
+<h3>需要发布的内容</h3>
+<ul>
+<li>
+<p>server</p>
+<ul>
+<li>CenterServer</li>
+<li>SessionServer</li>
+<li>NotifyServer</li>
+<li>PushServer</li>
+<li>AuthServer</li>
+<li>DocServer</li>
+<li>CacheServer</li>
+<li>ChatServer</li>
+<li>UpdownServer</li>
+<li>ApprovalServer</li>
+<li>OfficeConvert &amp; ExcelConvert （windows机器）</li>
+</ul>
+</li>
+<li>
+<p>html部署</p>
+</li>
+</ul>
+<blockquote>
+<p>monitor不用部署：具体表现上取消发往/log的请求</p>
+</blockquote>
+<pre><code>- html-quqi
+- html-www
+- html-common
+- html-doc-draft
+- html-doc-graph
+- html-doc-img
+- html-doc-md
+- html-doc-sheet
+- html-doc-word
+- html-webix
+</code></pre>
+<h3>调试阶段</h3>
+<p>全程windows下开发，数据库也使用本地，方便迁移（<strong>文档内容存储目录需要注意</strong>）。</p>
+<ul>
+<li>将需要部署的Server全部在本地启动</li>
+<li>测试功能</li>
+<li>功能取舍部分</li>
+</ul>
+<h3>模拟发布</h3>
+<ul>
+<li>将最新版本内网数据库导出，按照<a href="https://quqi.com/1/204969">数据库升级文档</a>再次升级，测试功能</li>
+</ul>
+<h3>准备发布</h3>
+<ul>
+<li>数据库准备</li>
+<li>前端代码打包（可以在本地打包）</li>
+<li>后端打包（在曲奇deploy机器进行编译）</li>
+<li>完整包交由徐晨copy至内网</li>
+</ul>
+<h2>发布</h2>
+<ul>
+<li>备份内网数据库</li>
+<li>由我在内网机上进行升级过程，到时需要停机更新</li>
+<li>测试</li>
+</ul>

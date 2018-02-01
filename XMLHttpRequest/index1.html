@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <textarea style="width: 500px; height:300px" id="question_text">
+        </textarea>
+    <textarea style="width: 500px; height:300px" id="options_text">
+            </textarea>
+</body>
+<script>
+    function search() {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+                    var result = JSON.parse(xhr.responseText);
+                    if (result.code == 0) {
+                        var data = result.data;
+                        if (data && data.event && data.event.desc) {
+                            document.getElementById("question_text").innerHTML = data.event.desc;
+                            document.getElementById("options_text").innerHTML = data.event.options;
+                            
+                        }
+                    }
+                }
+            }
+        };
+        xhr.open('GET', 'http://htpmsg.jiecaojingxuan.com/', true);
+        xhr.send('');
+    }
+
+    search();
+</script>
+
+</html>

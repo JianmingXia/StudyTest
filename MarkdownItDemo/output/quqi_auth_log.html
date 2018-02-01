@@ -1,0 +1,63 @@
+<h1>quqi_auth_log</h1>
+<h2>新增数据表</h2>
+<pre><code>DROP TABLE IF EXISTS `log_company_member_opt`;
+CREATE TABLE `log_company_member_opt` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `operate_user_id` int(11) DEFAULT NULL,
+  `operate_type` int(11) DEFAULT NULL,
+  `time` int(11) DEFAULT NULL,
+  `ip` char(16) DEFAULT NULL,
+  `param_1` varchar(1024) DEFAULT NULL,
+  `param_2` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+-- ----------------------------
+-- Table structure for log_company_opt
+-- ----------------------------
+DROP TABLE IF EXISTS `log_company_opt`;
+CREATE TABLE `log_company_opt` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `company_id` int(11) DEFAULT NULL,
+  `operate_type` int(11) DEFAULT NULL COMMENT '1为更改系统管理员，2为更改隐身boss，3为更改通讯录管理员，4为更改账户管理员，5为编辑团队名称，6为编辑团队头像',
+  `operate_user_id` int(11) DEFAULT NULL,
+  `time` int(11) DEFAULT NULL,
+  `ip` char(16) DEFAULT NULL,
+  `param_1` varchar(1024) DEFAULT NULL,
+  `param_2` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+
+-- ----------------------------
+-- Table structure for log_department_opt
+-- ----------------------------
+DROP TABLE IF EXISTS `log_department_opt`;
+CREATE TABLE `log_department_opt` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `department_id` int(11) DEFAULT NULL,
+  `operate_type` int(11) DEFAULT NULL COMMENT '1为创建部门，2为删除部门，3为增加成员，4为删成员，5为增加负责人，6为删除负责人',
+  `time` int(11) DEFAULT NULL,
+  `ip` char(16) DEFAULT NULL,
+  `user_ids` varchar(1024) DEFAULT NULL COMMENT 'operate_type 1情况下为创建时负责人的user_ids，3情况下为变动成员user_ids，4情况下变动负责人user_ids',
+  `operate_user_id` int(11) DEFAULT NULL COMMENT '操作者用户Id',
+  `param_1` varchar(1024) DEFAULT NULL,
+  `param_2` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+-- ----------------------------
+-- Table structure for log_passport_opt
+-- ----------------------------
+DROP TABLE IF EXISTS `log_passport_opt`;
+CREATE TABLE `log_passport_opt` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `passport_id` int(11) DEFAULT NULL,
+  `operate_type` int(11) DEFAULT NULL,
+  `time` int(11) DEFAULT NULL,
+  `ip` char(16) DEFAULT NULL,
+  `param_1` varchar(1024) DEFAULT NULL,
+  `param_2` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+</code></pre>

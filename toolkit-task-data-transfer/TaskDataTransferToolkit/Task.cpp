@@ -41,6 +41,21 @@ void Task::addChild(Task* task)
 	_children[task->task_id()] = task;
 }
 
+void Task::checkMember()
+{
+	for (Int32Vector::iterator iter = _member_ids.begin(); iter != _member_ids.end(); )
+	{
+		if (*iter == 0)
+		{
+			iter = _member_ids.erase(iter);
+		}
+		else
+		{
+			iter++;
+		}
+	}
+}
+
 void Task::getChildTaskMembers(Int32Vector& member_ids)
 {
 	FOR_EACH_EX(_children, iter)

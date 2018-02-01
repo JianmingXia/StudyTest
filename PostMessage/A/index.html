@@ -1,0 +1,23 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>父页面</title>
+    <script type="text/JavaScript">
+     //event 参数中有 data 属性，就是父窗口发送过来的数据
+     window.addEventListener("message", function( event ) {
+         debugger;
+         // 把父窗口发送过来的数据显示在子窗口中
+       document.getElementById("content").innerHTML += JSON.stringify(event.data) + "<br/>";
+     }, false );
+
+ </script>
+</head>
+
+<body>
+    <iframe src="http://child.b.com" id="otherPage"></iframe>
+
+    <div id="content"></div>
+</body>
+
+</html>

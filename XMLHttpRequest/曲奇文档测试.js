@@ -31,3 +31,4 @@ xhr.open('POST', 'http://local.quqi.com//api/service/getServiceType', true);
 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 xhr.send('quqi_id=12163');
 //#endregion
+

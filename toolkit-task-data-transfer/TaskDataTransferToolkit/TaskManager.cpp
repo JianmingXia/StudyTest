@@ -116,6 +116,8 @@ void TaskManager::_initMembers()
 		}
 
 		task->member_ids(StringUtil::splitInt32(row->getString("passport_ids")));
+
+		task->checkMember();
 	}
 }
 

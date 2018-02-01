@@ -3,7 +3,11 @@
 # PROJECT_NAME: 修改为项目名称，需要和项目源代码所在文件夹一致;
 # COMMAND_LINE: 启动项目的命令，这里写了一般的启动命令，如有需要请修改;
 
-PROJECT_NAME=DataStatsToolkit
+export NIREUS_VERSION=1.8
+export COMMON_LIB_PATH=/quqi/git-develop/server-common-lib
+export SERVER_LIB_PATH=/quqi/git-develop/server-lib
+
+PROJECT_NAME=TaskDataTransferToolkit
 COMMAND_LINE="./$PROJECT_NAME.bin -f config.ini"
 
 if [ $# -lt 1 ]

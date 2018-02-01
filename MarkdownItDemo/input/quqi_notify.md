@@ -1,0 +1,47 @@
+# quqi_notify
+
+## 新增数据表
+```
+CREATE TABLE `passport_notification` (
+  `notifi_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `passport_id` int(11) unsigned NOT NULL,
+  `parent_id` bigint(20) NOT NULL,
+  `source_type` int(11) NOT NULL,
+  `type` int(11) unsigned NOT NULL,
+  `sub_type` int(11) unsigned NOT NULL,
+  `tag` int(11) NOT NULL DEFAULT '0',
+  `quqi_id` int(11) NOT NULL,
+  `target` varchar(255) NOT NULL,
+  `target_type` int(11) NOT NULL,
+  `name_path` text,
+  `add_time` int(11) NOT NULL,
+  `update_time` int(11) NOT NULL,
+  `operator_id` int(11) DEFAULT NULL,
+  `operator_name` varchar(255) DEFAULT NULL,
+  `title` varchar(255) NOT NULL DEFAULT '',
+  `content` text NOT NULL,
+  PRIMARY KEY (`notifi_id`),
+  KEY `passport_id` (`passport_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+
+CREATE TABLE `passport_read_notification` (
+  `notifi_id` bigint(20) unsigned NOT NULL,
+  `passport_id` int(11) unsigned NOT NULL,
+  `parent_id` bigint(20) NOT NULL,
+  `source_type` int(11) NOT NULL,
+  `type` int(11) unsigned NOT NULL,
+  `sub_type` int(11) unsigned NOT NULL,
+  `tag` int(11) NOT NULL DEFAULT '0',
+  `quqi_id` int(11) NOT NULL,
+  `target` varchar(255) NOT NULL,
+  `target_type` int(11) NOT NULL,
+  `name_path` text,
+  `add_time` int(11) NOT NULL,
+  `update_time` int(11) NOT NULL,
+  `operator_id` int(11) DEFAULT NULL,
+  `operator_name` varchar(255) DEFAULT NULL,
+  `title` varchar(255) NOT NULL DEFAULT '',
+  `content` text NOT NULL,
+  PRIMARY KEY (`notifi_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+```
