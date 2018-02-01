@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+</head>
+
+<body>
+    <a href="/about/a">about a</a>
+    <a href="/">home</a>
+    <a href="/test">test</a>
+    <a href="/about/b">about b</a>
+    <div id="app"></div>
+    <script type="text/javascript">
+    debugger;
+        function Router(routeOption, id) {
+            this.routes = routeOption;
+            this.currentRoute = '';
+            this.dom = id ? document.getElementById(id) : null;
+        }
+        Router.prototype = {
+            init() {
+                window.addEventListener('popstate', () => {
+                    this.currentRoute = window.location.pathname;
+                    this.routes[this.currentRoute]
+                        ? this.dom ? this.dom.innerText = this.routes[this.currentRoute] : null
+                        : null;
+                })
+            },
+            _updateState(route) {
+                window.history.pushState(
+                    null,
+                    this.routes[route],
+                    route
+                )
+            },
+            route(route) {
+                this._updateState(route);
+            }
+        }
+        let router = new Router({
+            '/': 'Home',
+            '/about/a': 'About',
+            '/about/b': 'About_test'
+        }, 'app');
+
+        router.init();
+        document.querySelectorAll('a').forEach(function (item, index) {
+            item.addEventListener('click', function (e) {
+                e.preventDefault();
+                let route = item.getAttribute('href');
+                router.route(route);
+            })
+        });
+
+        let route = location.pathname;
+        router.route(route);
+    </script>
+</body>
+
+</html>
