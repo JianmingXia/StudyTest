@@ -1,0 +1,18 @@
+{
+  "name": "egg-example-hackernews",
+  "version": "1.0.0",
+  "description": "一步一步搭建",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "egg-bin dev"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "egg": "^2.3.0"
+  },
+  "devDependencies": {
+    "egg-bin": "^4.4.0"
+  }
+}
