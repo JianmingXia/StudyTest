@@ -19,5 +19,5 @@ const Products = ({ dispatch, products }) => {
 
 // export default Products;
 export default connect(({ products }) => ({
-    products,
+    products
 }))(Products);
