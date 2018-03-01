@@ -18,10 +18,10 @@ const TodoListApp = ({ dispatch, todolist }) => {
         });
     }
 
-    function handleAdd(name) {
+    function handleAdd(params) {
         dispatch({
-            type: 'todolist/add',
-            payload: name
+            type: 'todolist/addTask',
+            payload: params
         });
     }
 

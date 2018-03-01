@@ -31,7 +31,7 @@ class AddTodo extends Component {
 
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                this.props.onAdd(values.task_name);
+                this.props.onAdd(values);
 
                 this.props.form.setFieldsValue({ task_name: "" });
             }
