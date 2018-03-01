@@ -23,6 +23,8 @@ app.get('/', function (req, res) {
 
 var id = 0;
 app.post('/api/addTask', function (req, res) {
+    console.log(req.body);
+    
     var user = {
         id: id++,
         name: req.body.task_name,
@@ -30,4 +32,10 @@ app.post('/api/addTask', function (req, res) {
     }
 
     res.send(JSON.stringify(user));
+});
+
+app.get('/api/test', function (req, res) {
+    res.send(JSON.stringify({
+        test: "test"
+    }));
 });
