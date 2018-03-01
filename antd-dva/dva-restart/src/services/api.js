@@ -6,3 +6,7 @@ export function addTask(params) {
     body: params
   });
 }
+
+export function listTasks(params) {
+  return request('/api/listTasks');
+}

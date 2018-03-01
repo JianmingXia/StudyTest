@@ -1,4 +1,4 @@
-import { addTask } from '../services/api';
+import { addTask, listTasks } from '../services/api';
 
 export default {
     namespace: 'todolist',
@@ -12,9 +12,17 @@ export default {
                 payload: response.data
             });
         },
+        *listTasks({ payload }, { call, put }) {
+            const response = yield call(listTasks, payload);
+
+            yield put({
+                type: 'list',
+                payload: response.data
+            });
+        },
     },
     reducers: {
-        'change'(state, { payload: id }) {
+        change(state, { payload: id }) {
             return state.map((item) => {
                 if (item.id === id) {
                     return { ...item, completed: !item.completed };
@@ -23,15 +31,31 @@ export default {
                 }
             })
         },
-        'delete'(state, { payload: id }) {
+        delete(state, { payload: id }) {
             return state.filter(item => item.id !== id);
         },
-        'add'(state, { payload }) {
+        add(state, { payload }) {
             console.log(payload);
             return [
                 payload,
                 ...state
             ];
+        },
+        list(state, { payload }) {
+            console.log(payload);
+            return payload;
+        },
+    },
+    subscriptions: {
+        setup({ dispatch, history }) {
+            history.listen(({ pathname }) => {
+                console.log(pathname);
+                if (pathname === '/2') {
+                    dispatch({
+                        type: 'todolist/listTasks',
+                    });
+                }
+            });
         },
     },
 };
