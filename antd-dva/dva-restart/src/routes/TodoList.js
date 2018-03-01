@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'dva';
 import TodoList from '../components/TodoList';
 import AddTodo from '../components/AddTodo';
+import Header from '../components/Header';
 
 const TodoListApp = ({ dispatch, todolist }) => {
     function handleChange(id) {
@@ -27,6 +28,7 @@ const TodoListApp = ({ dispatch, todolist }) => {
 
     return (
         <div>
+            <Header />
             <h2>TodoList App</h2>
             <AddTodo onAdd={handleAdd} />
             <TodoList onChange={handleChange} onDelete={handleDelete} todolists={todolist}/>

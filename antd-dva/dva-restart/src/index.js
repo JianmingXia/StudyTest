@@ -1,15 +1,17 @@
 import dva from 'dva';
 import './index.css';
+import browserHistory from 'history/createBrowserHistory';
 
 // 1. Initialize
 // const app = dva();
 const app = dva({
     initialState: {
         products: [
-            { name: 'dva', id: 1 },
-            { name: 'antd', id: 2 },
+            { key: 1, name: 'dva', id: 1 },
+            { key: 2, name: 'antd', id: 2 },
         ],
     },
+    history: browserHistory(),
 });
 
 // 2. Plugins
