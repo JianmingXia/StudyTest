@@ -14,7 +14,6 @@ function RouterConfig({ history }) {
         <Route path="/0" exact component={IndexPage} />
         <Route path="/1" exact component={Products} />
         <Route path="/2" exact component={TodoList} />
-        <BrowserRouter basename="/2" />
       </Switch>
     </Router>
     // <BrowserRouter

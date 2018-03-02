@@ -16,13 +16,13 @@ function createWindow() {
   mainWindow = new BrowserWindow({ width: 800, height: 600 })
 
   // and load the index.html of the app.
-  // mainWindow.loadURL(url.format({
-  //   pathname: path.join(__dirname, 'index.html'),
-  //   protocol: 'file:',
-  //   slashes: true
-  // }))
+  mainWindow.loadURL(url.format({
+    pathname: path.join(__dirname, 'index.html'),
+    protocol: 'file:',
+    slashes: true
+  }))
   // mainWindow.loadURL("https://electron.org.cn");
-  mainWindow.loadURL("http://antd.ryoma.com");
+  // mainWindow.loadURL("http://antd.ryoma.com");
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
@@ -34,6 +34,8 @@ function createWindow() {
     // when you should delete the corresponding element.
     mainWindow = null
   })
+
+  mainWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished

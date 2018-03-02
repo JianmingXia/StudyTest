@@ -1,17 +1,24 @@
 {
   "private": true,
+  "main": "main.js",
   "scripts": {
     "start": "roadhog server",
     "build": "roadhog build",
     "lint": "eslint --ext .js src test",
-    "precommit": "npm run lint"
+    "precommit": "npm run lint",
+    "electron": "electron . --env dev",
+    "packagex": "electron-packager . testapp --overwrite --app-version=1.0.0 --platform=win32 --arch=x64 --out=./out --ignore=node_modules  --version=1.8.2",
+    "package": "electron-packager . Test --overwrite --app-version=1.0.0 --platform=win32 --arch=x64 --out=./out --ignore=\"(ignore|node_modules|src|public|out|mock)\"  --version=1.8.2"
   },
   "dependencies": {
     "antd": "^3.2.2",
     "babel-plugin-import": "^1.6.5",
     "dva": "^2.1.0",
+    "electron": "^1.8.2",
+    "electron-packager": "^11.0.1",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "react-dom": "^16.2.0",
+    "yargs": "^11.0.0"
   },
   "devDependencies": {
     "babel-plugin-dva-hmr": "^0.3.2",

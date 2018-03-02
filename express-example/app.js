@@ -21,17 +21,28 @@ app.get('/', function (req, res) {
     res.send('Hello World!');
 });
 
-var id = 0;
+
+var tasks = [{
+    id: 0,
+    name: "预置任务",
+    completed: false
+}];
+
+var id = tasks.length;
 app.post('/api/addTask', function (req, res) {
     console.log(req.body);
-    
-    var user = {
+
+    var task = {
         id: id++,
         name: req.body.task_name,
         completed: false
     }
 
-    res.send(JSON.stringify(user));
+    res.send(JSON.stringify(task));
+});
+
+app.get('/api/listTasks', function (req, res) {
+    res.send(JSON.stringify(tasks));
 });
 
 app.get('/api/test', function (req, res) {

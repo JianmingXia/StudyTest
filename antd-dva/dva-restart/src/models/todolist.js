@@ -42,17 +42,15 @@ export default {
             ];
         },
         list(state, { payload }) {
-            console.log(payload);
             return payload;
         },
     },
     subscriptions: {
         setup({ dispatch, history }) {
             history.listen(({ pathname }) => {
-                console.log(pathname);
                 if (pathname === '/2') {
                     dispatch({
-                        type: 'todolist/listTasks',
+                        type: 'listTasks',
                     });
                 }
             });
