@@ -7,8 +7,7 @@
     "lint": "eslint --ext .js src test",
     "precommit": "npm run lint",
     "electron": "electron . --env dev",
-    "packagex": "electron-packager . testapp --overwrite --app-version=1.0.0 --platform=win32 --arch=x64 --out=./out --ignore=node_modules  --version=1.8.2",
-    "package": "electron-packager . Test --overwrite --app-version=1.0.0 --platform=win32 --arch=x64 --out=./out --ignore=\"(ignore|node_modules|src|public|out|mock)\"  --version=1.8.2"
+    "packager": "electron-packager . testapp --overwrite --app-version=1.0.0 --platform=win32 --arch=x64 --out=./out --ignore=node_modules --version=1.8.2"
   },
   "dependencies": {
     "antd": "^3.2.2",

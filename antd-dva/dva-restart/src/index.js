@@ -11,7 +11,7 @@ const app = dva({
             { key: 2, name: 'antd', id: 2 },
         ],
     },
-    history: browserHistory(),
+    // history: browserHistory(),
 });
 
 // 2. Plugins

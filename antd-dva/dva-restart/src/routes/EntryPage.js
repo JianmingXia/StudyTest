@@ -2,19 +2,34 @@ import React from 'react';
 import { List  } from 'antd';
 
 const links = [
+    // {
+    //     name: "Index",
+    //     link: "/0",
+    //     desc: "demo"
+    // },
+    // {
+    //     name: "Products",
+    //     link: "/1",
+    //     desc: "产品描述。。。"
+    // },
+    // {
+    //     name: "TodoList",
+    //     link: "/2",
+    //     desc: "TodoList demo"
+    // }
     {
         name: "Index",
-        link: "/0",
+        link: "#/0",
         desc: "demo"
     },
     {
         name: "Products",
-        link: "/1",
+        link: "#/1",
         desc: "产品描述。。。"
     },
     {
         name: "TodoList",
-        link: "/2",
+        link: "#/2",
         desc: "TodoList demo"
     }
 ];
