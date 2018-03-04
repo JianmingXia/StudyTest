@@ -3,6 +3,7 @@
   "main": "main.js",
   "scripts": {
     "start": "roadhog server",
+    "dev": "concurrently \"roadhog server\" \"node ../../express-example/app.js\"",
     "build": "roadhog build",
     "lint": "eslint --ext .js src test",
     "precommit": "npm run lint",
@@ -21,6 +22,7 @@
   },
   "devDependencies": {
     "babel-plugin-dva-hmr": "^0.3.2",
+    "concurrently": "^3.5.1",
     "eslint": "^4.14.0",
     "eslint-config-umi": "^0.1.1",
     "eslint-plugin-flowtype": "^2.34.1",
