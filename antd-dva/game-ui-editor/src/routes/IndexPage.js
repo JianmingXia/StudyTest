@@ -21,7 +21,7 @@ function IndexPage() {
       <Layout className={styles.right}>
         <GlobalHeader className={styles.header}/>
         <Content className={styles.content}>
-          <Col xl={20} lg={16} md={24} sm={24} xs={24} style={{ height: "100%" }} >
+          <Col xl={20} lg={16} md={24} sm={24} xs={24} >
             <Game />
           </Col>
           <Col xl={4} lg={8} md={24} sm={24} xs={24}>
