@@ -15,20 +15,20 @@ const copyright = <Fragment>Copyright <Icon type="copyright" /> 2018 杭州乐�
 function IndexPage() {
   return (
     <Layout className={styles.layout}>
-      <Sider className={styles.slide}>
+      <Sider className={styles.left}>
         <GlobalLeft />
       </Sider>
-      <Layout>
-        <GlobalHeader />
-        <Content>
-          <Col xl={20} lg={16} md={24} sm={24} xs={24}>
+      <Layout className={styles.right}>
+        <GlobalHeader className={styles.header}/>
+        <Content className={styles.content}>
+          <Col xl={20} lg={16} md={24} sm={24} xs={24} style={{ height: "100%" }} >
             <Game />
           </Col>
           <Col xl={4} lg={8} md={24} sm={24} xs={24}>
             <PropertyManage />
           </Col>
         </Content>
-        <Footer>
+        <Footer className={styles.footer}>
           <GlobalFooter copyright={copyright} />
         </Footer>
       </Layout>
