@@ -16,3 +16,5 @@
   - mocha-phantomjs：在命令行模拟浏览器调用
   - nodemon: 监听代码修改，重启应用，方便调试
   - supertest: 配合集成测试
+  - benchmark: 基准测试
+  - travis: 持续集成平台
