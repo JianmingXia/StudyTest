@@ -1,7 +1,8 @@
 import React from 'react'
 
-const Todo = ({ completed, text }) => (
+const Todo = ({ completed, text, onClick }) => (
   <li
+    onClick={onClick}
     style={{
       textDecoration: completed ? 'line-through' : 'none'
     }}

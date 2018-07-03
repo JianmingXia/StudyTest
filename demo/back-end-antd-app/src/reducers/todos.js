@@ -1,5 +1,6 @@
 import {
-  ADD_TODO
+  ADD_TODO,
+  TOOGLE_TODO
 } from "../Constants";
 
 const todos = (state = [], action) => {
@@ -13,6 +14,14 @@ const todos = (state = [], action) => {
           completed: false
         }
       ];
+    case TOOGLE_TODO:
+      return state.map(todo =>
+        (todo.id === action.id) ?
+        { ...todo,
+          completed: !todo.completed
+        } :
+        todo
+      )
     default:
       return state
   }
