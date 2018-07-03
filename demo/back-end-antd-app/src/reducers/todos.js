@@ -1,6 +1,7 @@
 import {
   ADD_TODO,
-  TOOGLE_TODO
+  TOOGLE_TODO,
+  DELETE_TODO
 } from "../Constants";
 
 const todos = (state = [], action) => {
@@ -21,7 +22,11 @@ const todos = (state = [], action) => {
           completed: !todo.completed
         } :
         todo
-      )
+      );
+    case DELETE_TODO:
+      return state.filter(todo =>
+        todo.id !== action.id
+      );
     default:
       return state
   }
