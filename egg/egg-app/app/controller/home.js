@@ -2,7 +2,7 @@ const Controller = require('egg').Controller;
 
 class HomeController extends Controller {
     async index() {
-        this.ctx.body = `isIOS: ${this.ctx.isIOS}`;
+        this.ctx.body = `Now request isIOS: ${this.ctx.isIOS}`;
     }
 }
 
