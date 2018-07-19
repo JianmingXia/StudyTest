@@ -6,4 +6,9 @@
 module.exports = app => {
   const { router, controller } = app;
   router.get('/', controller.home.index);
+
+  router.post('/api/user/login', controller.user.login);
+
+  const checkLogin = app.middleware.checkLogin();
+  router.post('/api/user/info', checkLogin, controller.home.index);
 };
