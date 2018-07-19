@@ -11,10 +11,6 @@ class UserController extends Controller {
 
     const response = await this.ctx.service.user.login(username, password);
 
-    if (response.isSuccess()) {
-      this.ctx.session.currentUser = response.getData();
-    }
-
     this.ctx.body = response;
   }
 }

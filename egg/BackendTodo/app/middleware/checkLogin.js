@@ -2,7 +2,7 @@
 
 module.exports = () => {
   return async function checkLogin(ctx, next) {
-    const user = ctx.session.currentUser;
+    const user = ctx.cookies.get('session_key');
 
     if (!user) {
       ctx.body = ctx.response.ServerResponse.createByError(ctx.response.ResponseCode.NO_LOGIN, ctx.response.ResponseMessage.NO_LOGIN);
