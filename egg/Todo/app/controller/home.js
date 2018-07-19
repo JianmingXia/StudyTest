@@ -4,7 +4,9 @@ const Controller = require('egg').Controller;
 
 class HomeController extends Controller {
   async index() {
-    this.ctx.body = `hi, egg: ${this.app.config.keys}`;
+    const user = await this.ctx.service.user.find(5);
+
+    this.ctx.body = user;
   }
 
   async login() {
