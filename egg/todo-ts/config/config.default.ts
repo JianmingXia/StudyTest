@@ -35,5 +35,9 @@ export default (appInfo: EggAppInfo) => {
     agent: false,
   };
 
+  config.i18n = {
+    defaultLocale: 'zh-CN',
+  };
+
   return config;
 };
