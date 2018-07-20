@@ -13,6 +13,10 @@ class UserController extends Controller {
 
     this.ctx.body = response;
   }
+
+  async info() {
+    this.ctx.body = this.ctx.response.ServerResponse.createBySuccess('', this.ctx.session.current);
+  }
 }
 
 module.exports = UserController;

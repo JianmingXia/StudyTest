@@ -29,5 +29,8 @@ $ npm stop
 - 使用 `npm test` 来执行单元测试。
 - 使用 `npm run autod` 来自动检测依赖更新，详细参见 [autod](https://www.npmjs.com/package/autod) 。
 
+## 参考
+- https://github.com/sfyr111/egg-commerce
+- https://github.com/fomenyesu/egg-restapi-module-tool
 
 [egg]: https://eggjs.org

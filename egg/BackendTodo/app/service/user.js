@@ -13,7 +13,7 @@ class UserService extends Service {
       return this.ctx.response.ServerResponse.createByError(this.ctx.response.ResponseMessage.LOGIN_FAIL, this.ctx.response.ResponseCode.LOGIN_FAIL);
     }
 
-    this.ctx.cookies.set('session_key', 'this.ctx.config.keys');
+    this.ctx.session.current = { user_id: user.user_id, username: user.username };
 
     return this.ctx.response.ServerResponse.createBySuccess(this.ctx.response.ResponseMessage.LOGIN_SUCC);
   }
