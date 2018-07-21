@@ -23,16 +23,13 @@ export default (appInfo: EggAppInfo) => {
     }
   };
 
-  config.mysql = {
-    client: {
-      host: '127.0.0.1',
-      port: '3306',
-      user: 'root',
-      password: '',
-      database: 'todo',
-    },
-    app: true,
-    agent: false,
+  config.sequelize = {
+    dialect: 'mysql', // support: mysql, mariadb, postgres, mssql
+    database: 'todo',
+    host: 'localhost',
+    port: '3306',
+    username: 'root',
+    password: '',
   };
 
   config.i18n = {

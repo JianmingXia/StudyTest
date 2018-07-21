@@ -1,6 +1,7 @@
 declare module 'egg' {
   interface Application {
-    mysql: any;
+    Sequelize: SequelizeStatic;
+    model: Sequelize;
   }
 
   export interface Router {

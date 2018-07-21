@@ -1,10 +1,13 @@
 import { Service } from 'egg';
+import PasswordEncrypt from '../lib/passwordEncrypt';
 
 export default class UserService extends Service {
   public async login(username: string, password: string) {
-    const user = await this.app.mysql.get('user', {
-      username,
-      password
+    const user = await this.ctx.model.User.findOne({
+      where: {
+        username,
+        password: PasswordEncrypt(password),
+      }
     });
 
     const { ctx } = this;
