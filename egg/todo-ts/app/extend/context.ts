@@ -12,8 +12,8 @@ export default {
   errResp(
     this: Context,
     msg: string,
+    data?: object,
     code = ResponseCode.ERROR,
-    data?: object
   ): void {
     if (data) {
       this.body = { code, msg, data };
