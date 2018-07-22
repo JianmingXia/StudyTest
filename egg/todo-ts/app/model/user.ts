@@ -1,9 +1,10 @@
 import { Application } from 'egg';
+import BaseModel from './base';
 
 export default function User(app: Application) {
   const { BIGINT, CHAR } = app.Sequelize;
 
-  const modelSchema = app.model.define('user', {
+  const modelSchema = BaseModel(app, 'user', {
     user_id: {
       type: BIGINT,
       unique: true,
@@ -22,12 +23,19 @@ export default function User(app: Application) {
       allowNull: false,
       comment: '密码',
     },
+    register_at: {
+      type: BIGINT,
+      allowNull: true,
+      comment: '密码',
+    },
+    updated_at: {
+      type: BIGINT,
+      allowNull: true,
+      comment: '密码',
+    },
   },
     {
-      freezeTableName: true,
       deletedAt: false,
-      underscored: true,
-      createdAt: 'register_at',
     });
 
   return modelSchema;

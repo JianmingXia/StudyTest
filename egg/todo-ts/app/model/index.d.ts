@@ -1,4 +1,5 @@
-import { User } from './user'
+import User from './user'
+import Todo from './todo'
 import { Model, SequelizeStatic, Sequelize } from 'sequelize'
 
 declare module 'egg' {
@@ -11,6 +12,7 @@ declare module 'egg' {
   interface Context {
     model: {
       User: Model<User, {}>;
+      Todo: Model<Todo, {}>;
     }
   }
 }
