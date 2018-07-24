@@ -10,42 +10,47 @@ export default function Todo(app: Application) {
       unique: true,
       autoIncrement: true,
       primaryKey: true,
-      comment: '任务ID',
+      comment: '任务ID'
     },
     title: {
       type: CHAR(32),
       allowNull: false,
-      comment: '任务名称',
+      comment: '任务名称'
     },
     desc: {
       type: TEXT,
       allowNull: true,
-      comment: '任务描述',
+      comment: '任务描述'
     },
     creator_id: {
       type: BIGINT,
       allowNull: false,
-      comment: '用户ID',
+      comment: '用户ID'
     },
     is_completed: {
       type: TINYINT,
-      comment: '是否已完成',
+      comment: '是否已完成'
     },
     is_deleted: {
       type: TINYINT,
-      comment: '是否已被删除',
+      comment: '是否已被删除'
     },
     created_at: {
       type: BIGINT,
       allowNull: true,
-      comment: '密码',
+      comment: '创建时间'
     },
     updated_at: {
       type: BIGINT,
       allowNull: true,
-      comment: '密码',
+      comment: '更新时间'
     },
+    deleted_at: {
+      type: BIGINT,
+      allowNull: true,
+      comment: '删除时间'
+    }
   });
 
   return modelSchema;
-};
+}
