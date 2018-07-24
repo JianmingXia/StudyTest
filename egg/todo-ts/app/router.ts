@@ -17,4 +17,6 @@ export default (app: Application) => {
   // redis test
   router.get('/api/redis/:key', controller.redis.get);
   router.post('/api/redis/:key', controller.redis.set);
+
+  router.post('/api/redis/:hash_name/hash_field/:hash_field', controller.redis.setHash);
 };
