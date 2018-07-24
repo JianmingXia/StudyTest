@@ -1,7 +1,6 @@
 declare module 'egg' {
   interface Application {
-    Sequelize: SequelizeStatic;
-    model: Sequelize;
+    redis: Redis
   }
 
   export interface Router {
@@ -17,6 +16,7 @@ declare module 'egg' {
     [key: string]: any;
     user_id: number;
     username: string;
+    valid: boolean;
   }
 
   interface Session {

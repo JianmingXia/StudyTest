@@ -16,12 +16,13 @@ export default class UserService extends Service {
     }
     ctx.session.current = {
       user_id: user.user_id,
-      username: user.username
+      username: user.username,
+      valid: true
     };
 
     ctx.succResp(ctx.session.current, ctx.__('LOGIN_SUCC'));
   }
   public logout() {
-    this.ctx.session.current = null;
+    this.ctx.session.current.valid = false;
   }
 }

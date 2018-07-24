@@ -13,4 +13,8 @@ export default (app: Application) => {
   router.get('/api/todo/:id', checkLogin, controller.todo.info);
   router.patch('/api/todo/:id', checkLogin, controller.todo.update);
   router.delete('/api/todo/:id', checkLogin, controller.todo.delete);
+
+  // redis test
+  router.get('/api/redis/:key', controller.redis.get);
+  router.post('/api/redis/:key', controller.redis.set);
 };
