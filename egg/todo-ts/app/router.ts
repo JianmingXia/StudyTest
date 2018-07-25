@@ -15,8 +15,19 @@ export default (app: Application) => {
   router.delete('/api/todo/:id', checkLogin, controller.todo.delete);
 
   // redis test
+  // String
   router.get('/api/redis/:key', controller.redis.get);
   router.post('/api/redis/:key', controller.redis.set);
 
-  router.post('/api/redis/:hash_name/hash_field/:hash_field', controller.redis.setHash);
+  // hash
+  router.post('/api/redis/hash/:hash_name/hash_field/:hash_field', controller.redis.setHash);
+  router.delete('/api/redis/hash/:hash_name/hash_field/:hash_field', controller.redis.deleteHash);
+  router.get('/api/redis/hash/keys/:hash_name', controller.redis.getHashKeys);
+
+  // list
+  router.post('/api/redis/list/:list_name', controller.redis.lpush);
+  router.delete('/api/redis/list/:list_name/list_value/:list_value', controller.redis.deleteListValue);
+
+  // set
+  router.post('/api/redis/set/:set_name', controller.redis.sadd);
 };
