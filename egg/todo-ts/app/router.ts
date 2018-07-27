@@ -16,8 +16,8 @@ export default (app: Application) => {
 
   // redis test
   // String
-  router.get('/api/redis/:key', controller.redis.get);
-  router.post('/api/redis/:key', controller.redis.set);
+  router.get('/api/redis/string/:key', controller.redis.get);
+  router.post('/api/redis/string/:key', controller.redis.set);
 
   // hash
   router.post('/api/redis/hash/:hash_name/hash_field/:hash_field', controller.redis.setHash);
@@ -30,4 +30,7 @@ export default (app: Application) => {
 
   // set
   router.post('/api/redis/set/:set_name', controller.redis.sadd);
+
+  // common
+  router.delete('/api/redis/:key_name', controller.redis.delete);
 };

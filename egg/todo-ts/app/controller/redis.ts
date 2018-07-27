@@ -69,7 +69,9 @@ export default class RedisController extends Controller {
 
     await app.redis.lpushx(list_name, value);
 
-    ctx.succResp({ [list_name]: await app.redis.lrange(list_name, 0, -1) });
+    ctx.succResp({
+      [list_name]: await app.redis.lrange(list_name, 0, -1)
+    });
   }
   public async deleteListValue() {
     const { ctx, app } = this;
@@ -79,7 +81,9 @@ export default class RedisController extends Controller {
 
     await app.redis.lrem(list_name, 0, list_value);
 
-    ctx.succResp({ [list_name]: await app.redis.lrange(list_name, 0, -1) });
+    ctx.succResp({
+      [list_name]: await app.redis.lrange(list_name, 0, -1)
+    });
   }
   // List END
   // Set START
@@ -92,7 +96,20 @@ export default class RedisController extends Controller {
 
     await app.redis.sadd(set_name, value);
 
-    ctx.succResp({ [set_name]: await app.redis.smembers(set_name) });
+    ctx.succResp({
+      [set_name]: await app.redis.smembers(set_name)
+    });
   }
   // Set END
+  // common START
+  public async delete() {
+    const { ctx, app } = this;
+
+    const key_name = ctx.params.key_name;
+
+    await app.redis.del(key_name);
+
+    ctx.succResp({});
+  }
+  // common END
 }
