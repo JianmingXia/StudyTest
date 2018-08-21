@@ -28,6 +28,7 @@
     "mysql2": "^1.5.3"
   },
   "devDependencies": {
+    "@types/ioredis": "^3.2.13",
     "@types/mocha": "^2.2.40",
     "@types/node": "^7.0.12",
     "@types/supertest": "^2.0.0",

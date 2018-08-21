@@ -1,6 +1,8 @@
+import { Redis } from '../node_modules/@types/ioredis';
+
 declare module 'egg' {
   interface Application {
-    redis: Redis
+    redis: Redis,
   }
 
   export interface Router {
