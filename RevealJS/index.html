@@ -28,15 +28,264 @@
         <div class="slides">
             <section data-markdown data-separator="^\n---\n$" data-separator-vertical="^\n--\n$">
                 <script type="text/template">
-                    ## Slide 1.1
+                    # Redis
 
+                    创新研究院 & 夏见明
 
                     ---
 
-                    ## Slide 2
-                    方案一 <!-- .element: style="text-align: left;" -->
+                    0. 为什么要使用Redis?
+                    1. Redis 引入分析
+                    2. Redis 基础数据结构
+                    3. Redis 开发规范
+                    4. Redis 使用
 
-                    是的范德萨
+                    ---
+
+                    ## 为什么要使用Redis?
+
+                    - 单点问题
+                    - 性能及并发
+
+                    Note:预加载、无失效措施、所有数据皆存于内存
+
+                    ---
+
+                    # 缓存策略分析
+                    ## Cache Aside Pattern
+
+                    适用场景：<!-- .element: style="text-align: left;" -->
+                
+                    - 数据非常重要
+                    - 多读少写
+
+                    --
+
+                    ![Cache Aside Pattern](./images/Redis/Cache Aside-1.png) <!-- .element: style="width: 500px;" -->
+
+                    Q: 为何先标记缓存失效？
+
+                    --
+
+                    说明：<!-- .element: style="text-align: left;" -->
+                    - 读数据
+                        - 命中：从cache中取数据
+                        - 失效：从数据库中取数据，并将数据放到缓存中
+                    - 写数据
+
+                        先让缓存失效
+                        - 成功：操作数据库
+                        - 失败：直接返回
+
+                    --
+
+                    <!-- .element: style="text-align: left;" -->
+                    [canal](https://github.com/alibaba/canal)：
+                    - 通过模拟mysql slave的交互协议，将自己伪装成mysql slave
+                    - 然后通过解析mysql master推送的binlog文件
+                    - 最后再进行redis数据的同步
+
+                    使用canal算是Cache Aside Pattern策略的加强，但使用Canal要引入Java技术栈，故暂不引入，后续可根据需要再做考虑
+
+                    ---
+
+                    ## Write Behind Caching Pattern
+                    > Write Back
+
+                    适用场景：<!-- .element: style="text-align: left;" -->
+                    - 频写且数据不太重要
+
+                    --
+
+                    说明：<!-- .element: style="text-align: left;" -->
+
+                    更新数据的时候，只更新缓存，不同步更新数据库，能够让服务器的处理能力不受Mysql性能的限制。<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    ![Cache Aside Pattern](./images/Redis/Write Back.png) <!-- .element: style="width: 500px;" -->
+
+                    --
+
+                    - 读数据
+                        - 命中：从cache中取数据
+                        - 失效：从数据库中取数据，并将数据放到缓存中
+                    - 写数据
+                        直接将数据写入缓存
+
+                        - 成功：将更新操作发到消息中间件，消息中间件负责将数据更新至数据库
+                        - 失败：直接返回
+
+                    --
+
+                    <!-- .element: style="text-align: left;" -->
+                    上面的消息中间件是同步redis数据的一个解决方案，还有另外一个解决方案，是通过分析Redis的RDB/AOF文件，来实现数据同步的功能。
+
+                    工具目前发现[redis-replicator](https://github.com/leonchen83/redis-replicator)，使用Java去写功能。
+
+                    ---
+
+                    ## Redis 基础数据结构
+                    Redis所有的数据结构都是以唯一的key(string类型)作为名称，再通过唯一的key来获取对应的value。<!-- .element: style="text-align: left;" -->
+                    
+                    不同类型的数据结构源于value的结构。<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    - 字符串（String）
+                    - 字典（Hash)
+                    - 列表（List)
+                    - 集合（Set)
+                    - 有序集合（SortedSet)
+
+                    --
+
+                    - HyperLogLog
+                    - Geo
+                    - Pub/Sub
+                    - BloomFilter
+
+                    ---
+
+                    ## 字符串（String）
+                    
+                    String是Redis中最简单的数据结构。
+                    
+                    使用案例：<!-- .element: style="text-align: left;" -->
+                    - 缓存用户信息：将用户信息序列化成字符串，再将数据存储至String结构 
+
+                    --
+
+                    命令：<!-- .element: style="text-align: left;" -->
+                    ```
+                    SET key value [EX seconds] [PX milliseconds] [NX|XX]
+                    GET key
+                    MSET key value [key value ...]
+                    MGET key [key ...]
+                    ```
+
+                    --
+
+                    Since the SET command options can replace SETNX, SETEX, PSETEX, it is possible that in future versions of Redis these three commands will be deprecated and finally removed.
+
+                    ---
+
+                    ## 字典（Hash）
+
+                    使用案例：<!-- .element: style="text-align: left;" -->
+                    - 缓存用户信息：将用户信息的每个字段单独存储，获取时可部分获取（较于String类型，一定程度上节省了流量）
+
+                    --
+
+                    命令：<!-- .element: style="text-align: left;" -->
+                    ```
+                    HSET key field value
+                    HGET key field
+                    HMSET key field value [field value ...]
+                    HMGET key field [field ...]
+                    HGETALL key
+                    HLEN key
+                    HINCRBY key field increment
+                    ```
+
+                    --
+
+                    Redis strings vs Redis hashes to represent JSON: efficiency?
+                    ```
+                    SET user:1 payload
+                    ```
+
+                    ```
+                    HSET user:1 username "someone"
+                    HSET user:1 location "NY"
+                    HSET user:1 bio "STRING WITH OVER 100 lines"
+                    ```
+
+                    --
+
+                    ![string_vs_hash](./images/Redis/string_vs_hash.png) <!-- .element: style="width: 500px;" -->
+
+                    [原文链接](https://stackoverflow.com/questions/16375188/redis-strings-vs-redis-hashes-to-represent-json-efficiency)
+
+                    ---
+
+                    ## 列表（List）
+
+                    O(1):<!-- .element: style="text-align: left;" -->
+                    - LPUSH
+                    - LPOP 
+                    - RPUSH
+                    - RPOP 
+
+                    O(N):<!-- .element: style="text-align: left;" -->
+                    - LINSERT
+                    - LINDEX
+
+                    --
+
+                    使用案例：<!-- .element: style="text-align: left;" -->
+                    - 异步队列：将需要延迟处理的任务序列化成字符串，push到Redis的List中，由另一个线程负责处理
+
+                    --
+
+                    命令：<!-- .element: style="text-align: left;" -->
+                    ```
+                    LPUSH key value [value ...]
+                    LPOP key
+                    RPUSH key value [value ...]
+                    RPOP
+                    RPOPLPUSH source destination
+                    LTRIM key start stop
+                    BLPOP key [key ...] timeout
+                    ```
+
+                    ---
+
+                    ## 集合（Set）
+
+                    使用案例：<!-- .element: style="text-align: left;" -->
+                    - 中奖池：将已中奖用户ID存储至Set，因为Set有去重功能，可以用来保证同一用户不会中奖两次
+
+                    --
+
+                    命令：<!-- .element: style="text-align: left;" -->
+                    ```
+                    SADD key member [member ...]
+                    SREM key member [member ...]
+                    SISMEMBER key member
+                    SCARD key
+                    SMEMBERS key
+                    SPOP key
+                    ```
+
+                    ---
+
+                    ## 有序集合（SortedSet）
+
+                    使用案例：<!-- .element: style="text-align: left;" -->
+                    - 粉丝列表：value是粉丝的ID，score是关注的时间——可以对粉丝列表按关注进行排序
+                    - 成绩表：value是学生的ID，score是成绩——可以对学生按成绩进行排序
+
+                    --
+
+                    命令：<!-- .element: style="text-align: left;" -->
+                    ```
+                    ZADD key score member [[score member] [score member] ...]
+                    ZCARD key
+                    ZREM key member [member ...]
+                    ZCOUNT key min max
+                    ZSCORE key member
+                    ZRANGE key start stop [WITHSCORES]
+                    ZREVRANGE key start stop [WITHSCORES]
+                    ZRANGEBYSCORE key min max [WITHSCORES] [LIMIT offset count]
+                    ```
+
+                    ---
+
+                    ## 容器型数据结构的通用规则
+                    - create if not exists：比如lpush操作，如果列表不存在，那就创建一个，再进行lpush操作
+                    - drop if no elements：比如lpop操作，如果列表中没有元素，那数据结构自动删除，内存被回收
+
                 </script>
             </section>
         </div>
