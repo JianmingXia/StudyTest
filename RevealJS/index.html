@@ -36,7 +36,7 @@
 
                     0. 为什么要使用Redis?
                     1. 缓存策略分析
-                    2. Redis 基础及命令
+                    2. Redis 数据结构与特性
                     3. Redis 安全
                     4. Redis 开发规范
                     5. Redis 应用
@@ -84,9 +84,9 @@
                     [canal](https://github.com/alibaba/canal)：
                     - 通过模拟mysql slave的交互协议，将自己伪装成mysql slave
                     - 然后通过解析mysql master推送的binlog文件
-                    - 最后再进行redis数据的同步
+                    - 最后再进行缓存数据的同步
 
-                    使用canal算是Cache Aside Pattern策略的加强，但使用Canal要引入Java技术栈，故暂不引入，后续可根据需要再做考虑
+                    使用canal算是Cache Aside Pattern策略的加强，但使用Canal要引入Java技术栈，故暂不引入，后续可根据需要再做考虑。
 
                     ---
 
@@ -167,6 +167,8 @@
                     GET key
                     MSET key value [key value ...]
                     MGET key [key ...]
+                    SETEX key seconds value
+                    ...
                     ```
 
                     --
@@ -195,6 +197,7 @@
                     HGETALL key
                     HLEN key
                     HINCRBY key field increment
+                    ...
                     ```
 
                     --
@@ -224,18 +227,6 @@
 
                     --
 
-                    O(1):<!-- .element: style="text-align: left;" -->
-                    - LPUSH
-                    - LPOP 
-                    - RPUSH
-                    - RPOP 
-
-                    O(N):<!-- .element: style="text-align: left;" -->
-                    - LINSERT
-                    - LINDEX
-
-                    --
-
                     使用案例：<!-- .element: style="text-align: left;" -->
                     - 异步队列：将需要延迟处理的任务序列化成字符串，push到Redis的List中，由另一个线程负责处理
 
@@ -246,11 +237,24 @@
                     LPUSH key value [value ...]
                     LPOP key
                     RPUSH key value [value ...]
-                    RPOP
+                    RPOP key
                     RPOPLPUSH source destination
                     LTRIM key start stop
                     BLPOP key [key ...] timeout
+                    ...
                     ```
+
+                    --
+
+                    O(1):<!-- .element: style="text-align: left;" -->
+                    - LPUSH
+                    - LPOP 
+                    - RPUSH
+                    - RPOP
+
+                    O(N):<!-- .element: style="text-align: left;" -->
+                    - LINSERT
+                    - LINDEX
 
                     ---
 
@@ -273,6 +277,7 @@
                     SCARD key
                     SMEMBERS key
                     SPOP key
+                    ...
                     ```
 
                     ---
@@ -299,6 +304,7 @@
                     ZRANGE key start stop [WITHSCORES]
                     ZREVRANGE key start stop [WITHSCORES]
                     ZRANGEBYSCORE key min max [WITHSCORES] [LIMIT offset count]
+                    ...
                     ```
 
                     ---
@@ -311,8 +317,17 @@
 
                     ## Pub/Sub
 
-                    当有生产者生产消息，有X个消费者去消费消息时，可以考虑使用Pub/Sub<!-- .element: style="text-align: left;" -->
+                    当有订阅者对一个或多个频道感兴趣，只需订阅感兴趣的频道，就可以接受到对应的消息，不需要知道什么样的发布者发布的。<!-- .element: style="text-align: left;" -->
 
+                    ```
+                    SUBSCRIBE channel [channel ...]
+                    UNSUBSCRIBE [channel [channel ...]]
+                    PUBLISH channel message
+                    ```
+
+                    --
+
+                    缺陷：<!-- .element: style="text-align: left;" -->
                     - Redis不允许连接在subscribe等待消息时，还进行其它的操作
                     - 在消费者挂掉期间，生产者发送的消息彻底丢失
 
@@ -327,7 +342,9 @@
                     --
 
                     ### 原子性
-                    需要明确Redis的原子性和关系型数据库是不一样的，当事务执行中间发生失败了，后面的命令还可以继续进行。<!-- .element: style="text-align: left;" -->
+                    事务的原子性——全部成功 or 全部失败。<!-- .element: style="text-align: left;" -->
+
+                    在Redis事务执行中，如果有命令失败了，不会影响后续的命令——能保证的是当前执行的事务不会被其他命令打断。<!-- .element: style="text-align: left;" -->
 
                     --
 
@@ -337,10 +354,16 @@
                     --
 
                     ### Watch
+                    
+                    ```
+                    WATCH key [key ...]
+                    ```
 
-                    先修改资源，检查资源是否被修改过：<!-- .element: style="text-align: left;" -->
-                    - 未被修改，则本次修改成功；
-                    - 已被修改，可选择重试或取消。
+                    --
+
+                    在事务开始之前执行Watch指令，在服务器收到Exec指令执行时，会检查关注的key是否被修改过（check-and-set）：<!-- .element: style="text-align: left;" -->
+                    - 未被修改，执行本次事务；
+                    - 已被修改，此次事务执行失败，可选择重试或取消。
 
                     ---
 
@@ -356,9 +379,7 @@
 
                     ## HyperLogLog
 
-                    - 占用12KB空间
-                    
-                    Redis对HyperLogLog的存储进行了优化，在计数比较小时，它的存储空间采用稀疏矩阵存储，空间占用很小。<!-- .element: style="text-align: left;" -->
+                    HyperLogLog提供了不精确的去重计数方案，标准误差是 0.81%。<!-- .element: style="text-align: left;" -->
 
                     --
 
@@ -368,6 +389,12 @@
                     PFCOUNT key [key ...] 
                     PFMERGE destkey sourcekey [sourcekey ...] 
                     ```
+
+                    --
+
+                    - 占用12k空间——不适合存储单个用户相关的数据
+
+                    Redis对HyperLogLog的存储进行了优化，在计数比较小时，它的存储空间采用稀疏矩阵存储，空间占用很小。<!-- .element: style="text-align: left;" -->
 
                     ---
 
@@ -393,6 +420,10 @@
 
                     ## Geo
 
+                    业界通用的地理位置距离排序算法是GeoHash，Redis使用的也是GeoHash算法。<!-- .element: style="text-align: left;" -->
+
+                    --
+
                     命令： <!-- .element: style="text-align: left;" -->
                     ```
                     GEOADD key longitude latitude member [longitude latitude member ...]
@@ -400,12 +431,13 @@
                     GEODIST key member1 member2 [unit]
                     GEOHASH key member [member ...]
                     GEORADIUS key longitude latitude radius m|km|ft|mi [WITHCOORD] [WITHDIST] [WITHHASH] [ASC|DESC] [COUNT count]
+                    ...
                     ```
 
                     --
 
                     注意点：<!-- .element: style="text-align: left;" -->
-                    - Geo底层使用的zset数据结构
+                    - Geo内部结构实际上是zset
                     - 单个key存储的容量限制
                     - 按国家拆分、省份拆分等等
 
@@ -455,21 +487,23 @@
 
                     ## Key 设计
                     ### 可读性 <!-- .element: style="text-align: left;" -->
-                    以业务名(或数据库名)为前缀，用冒号分隔<!-- .element: style="text-align: left;" -->
-                    格式：业务名：子业务名：id<!-- .element: style="text-align: left;" -->
+                    以业务名(或数据库名)为前缀，用冒号分隔。<!-- .element: style="text-align: left;" -->
 
-                    活动系统-人拉人红包活动-id<!-- .element: style="text-align: left;" -->
+                    业务名:子业务名:id => 活动系统:人拉人红包活动:id<!-- .element: style="text-align: left;" -->
+
                     ```
-                    ACTIVITY:INVITE_REDPACKET:001<!-- .element: style="text-align: left;" -->
+                    ACTIVITY:INVITE_REDPACKET:1
                     ```
 
                     --
 
                     ### 简洁性<!-- .element: style="text-align: left;" -->
-                    保证语义的前提下，控制key的长度。否则当key较多时，内存占用也不容忽视<!-- .element: style="text-align: left;" -->
+                    保证语义的前提下，控制key的长度。<!-- .element: style="text-align: left;" -->
+
+                    否则当key较多时，内存占用也不容忽视。<!-- .element: style="text-align: left;" -->
 
                     ### 不包含转义字符<!-- .element: style="text-align: left;" -->
-                    不包含空格、换行、单双引号以及其他转义字符<!-- .element: style="text-align: left;" -->
+                    不包含空格、换行、单双引号以及其他转义字符。<!-- .element: style="text-align: left;" -->
 
                     --
 
@@ -478,7 +512,9 @@
                     - string类型尽量控制在10KB以内
                     - hash、list、set、zset元素个数不要超过5000
 
-                    虽然redis对单个key可以缓存的对象长度能够支持的很大，但是实际使用场合一定要合理拆分过大的缓存项，1k 基本是redis性能的一个拐点。<!-- .element: style="text-align: left;" -->
+                    --
+
+                    虽然Redis对单个key可以缓存的对象长度能够支持的很大，但是实际使用场合一定要合理拆分过大的缓存项，1k 基本是Redis性能的一个拐点。<!-- .element: style="text-align: left;" -->
 
                     --
 
@@ -498,8 +534,8 @@
                     --
 
                     ### 合理设置过期时间<!-- .element: style="text-align: left;" -->
-                    - 如果key没有设置超时时间，会导致一直占用内存。
-                    - 建议使用expire设置过期时间(条件允许可以打散过期时间，防止集中过期)，不过期的数据重点关注idletime。
+                    - 如果key没有设置超时时间，会导致一直占用内存
+                    - 建议使用expire设置过期时间(条件允许可以打散过期时间，防止集中过期)，不过期的数据重点关注idletime
                     - 对于可以预估使用生命周期的key，应当设置合理的过期时间或在最后一次操作时进行清理
 
                     --
@@ -517,19 +553,19 @@
                     --
 
                     ### 合理利用批操作命令<!-- .element: style="text-align: left;" -->
-                    在redis使用过程中，要正视网络往返时间，合理利用批量操作命令，减少通讯时延和redis访问频次。<!-- .element: style="text-align: left;" -->
+                    在Redis使用过程中，要正视网络往返时间，合理利用批量操作命令，减少通讯时延和Redis访问频次。<!-- .element: style="text-align: left;" -->
 
                     --
 
-                    - MSET/HMSET等都支持一次输入多个key，LPUSH/RPUSH/SADD等命令都支持一次输入多个value，也要注意每次操作数量不要过多，建议控制在500个以内；
+                    - MSET/HMSET/LPUSH/RPUSH/SADD等命令支持一次操作多个key或value，同时注意每次操作数量不要过多，建议控制在500个以内
 
                     --
 
-                    - redis提供一个 pipeline 的管道操作模式，将多个指令汇总到队列中批量执行，可以减少tcp交互产生的时间，一般情况下能够有10%~30%不等的性能提升；
+                    - Redis提供了pipeline——管道，将多个指令汇总到队列中批量执行，一般情况下能够有10%~30%不等的性能提升；
 
                     --
 
-                    - 更快的是Lua Script模式，还可以包含逻辑。redis内嵌了 lua 解析器，可以执行lua 脚本，脚本可以通过eval等命令直接执行，也可以使用script load等方式上传到服务器端的script cache中重复使用。
+                    - Redis提供了Lua Script，还可以包含逻辑。脚本可以通过eval等命令直接执行，也可以使用SCRIPT LOAD等方式上传到服务器端的script cache中重复使用。
 
                     ---
 
@@ -545,6 +581,10 @@
 
                     ## 分布式锁
 
+                    ```
+                    SET key value [EX seconds] [PX milliseconds] [NX|XX]
+                    ```
+
                     --
 
                     ## 异步 & 延时任务
@@ -554,14 +594,14 @@
 
                     --
 
-                    ## list
+                    ### list<!-- .element: style="text-align: left;" -->
 
                     - rpush/lpush 
                     - lpop/rpop => blpop/brpop
 
                     --
 
-                    ## zset
+                    ### zset<!-- .element: style="text-align: left;" -->
 
                     ```
                     redis.zadd("delay-queue", retry_ts, value)
@@ -581,7 +621,7 @@
 
                     --
 
-                    ## 位图
+                    ### 位图
                     ```
                     SETBIT key offset value
                     GETBIT key offset
@@ -589,11 +629,11 @@
 
                     --
 
-                    考虑一个需求：如何控制用户一分钟最多发10个评论？
+                    如何控制用户一分钟最多发10个评论？
 
                     --
 
-                    ## zset
+                    ### 使用zset<!-- .element: style="text-align: left;" -->
 
                     ```
                     pipe.zadd(key, now_ts, now_ts)
@@ -606,19 +646,17 @@
 
                     ---
 
-                    ## 更多
+                    ## 更多 & 资料
 
-                    - [在各技术栈的使用](https://quqi.com/1/217343)
+                    - [各技术栈的使用](https://quqi.com/1/217343)
                     - 持久化
-                    - 淘汰策略
+                    - 回收策略
+                    - 缓存雪崩、穿透
                     - 集群
                     - 源码分析
-
-                    ---
-                    
-                    ## 资料
-
                     - https://quqi.com/1/217343
+
+                    Note: 缓存预热、更新、降级
 
                     ---
 
