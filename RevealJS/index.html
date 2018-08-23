@@ -35,17 +35,18 @@
                     ---
 
                     0. 为什么要使用Redis?
-                    1. Redis 引入分析
-                    2. Redis 基础数据结构
-                    3. Redis 开发规范
-                    4. Redis 使用
+                    1. 缓存策略分析
+                    2. Redis 基础及命令
+                    3. Redis 安全
+                    4. Redis 开发规范
+                    5. Redis 应用
 
                     ---
 
-                    ## 为什么要使用Redis?
+                    # 为什么要使用Redis?
 
                     - 单点问题
-                    - 性能及并发
+                    - 性能、并发
 
                     Note:预加载、无失效措施、所有数据皆存于内存
 
@@ -56,7 +57,7 @@
 
                     适用场景：<!-- .element: style="text-align: left;" -->
                 
-                    - 数据非常重要
+                    - 数据重要性高
                     - 多读少写
 
                     --
@@ -93,7 +94,7 @@
                     > Write Back
 
                     适用场景：<!-- .element: style="text-align: left;" -->
-                    - 频写且数据不太重要
+                    - 频写 & 数据重要性不高
 
                     --
 
@@ -119,13 +120,13 @@
                     --
 
                     <!-- .element: style="text-align: left;" -->
-                    上面的消息中间件是同步redis数据的一个解决方案，还有另外一个解决方案，是通过分析Redis的RDB/AOF文件，来实现数据同步的功能。
+                    消息中间件是异步同步到数据库的一个解决方案，还有另外一个解决方案，是通过分析Redis的RDB/AOF文件，来实现数据同步的功能。
 
-                    工具目前发现[redis-replicator](https://github.com/leonchen83/redis-replicator)，使用Java去写功能。
+                    工具目前发现[redis-replicator](https://github.com/leonchen83/redis-replicator)。
 
                     ---
 
-                    ## Redis 基础数据结构
+                    # Redis 基础数据结构
                     Redis所有的数据结构都是以唯一的key(string类型)作为名称，再通过唯一的key来获取对应的value。<!-- .element: style="text-align: left;" -->
                     
                     不同类型的数据结构源于value的结构。<!-- .element: style="text-align: left;" -->
@@ -150,7 +151,11 @@
                     ## 字符串（String）
                     
                     String是Redis中最简单的数据结构。
+
+                    ![string](./images/Redis/string.png) <!-- .element: style="width: 500px;" -->
                     
+                    --
+
                     使用案例：<!-- .element: style="text-align: left;" -->
                     - 缓存用户信息：将用户信息序列化成字符串，再将数据存储至String结构 
 
@@ -171,6 +176,10 @@
                     ---
 
                     ## 字典（Hash）
+
+                    ![hash](./images/Redis/hash.png) <!-- .element: style="width: 500px;" -->
+
+                    --
 
                     使用案例：<!-- .element: style="text-align: left;" -->
                     - 缓存用户信息：将用户信息的每个字段单独存储，获取时可部分获取（较于String类型，一定程度上节省了流量）
@@ -211,6 +220,10 @@
 
                     ## 列表（List）
 
+                    ![list](./images/Redis/list.png) <!-- .element: style="width: 500px;" -->
+
+                    --
+
                     O(1):<!-- .element: style="text-align: left;" -->
                     - LPUSH
                     - LPOP 
@@ -243,6 +256,10 @@
 
                     ## 集合（Set）
 
+                    ![set](./images/Redis/set.png) <!-- .element: style="width: 500px;" -->
+
+                    --
+
                     使用案例：<!-- .element: style="text-align: left;" -->
                     - 中奖池：将已中奖用户ID存储至Set，因为Set有去重功能，可以用来保证同一用户不会中奖两次
 
@@ -261,6 +278,10 @@
                     ---
 
                     ## 有序集合（SortedSet）
+
+                    ![zset](./images/Redis/zset.png) <!-- .element: style="width: 500px;" -->
+
+                    --
 
                     使用案例：<!-- .element: style="text-align: left;" -->
                     - 粉丝列表：value是粉丝的ID，score是关注的时间——可以对粉丝列表按关注进行排序
@@ -285,6 +306,323 @@
                     ## 容器型数据结构的通用规则
                     - create if not exists：比如lpush操作，如果列表不存在，那就创建一个，再进行lpush操作
                     - drop if no elements：比如lpop操作，如果列表中没有元素，那数据结构自动删除，内存被回收
+
+                    ---
+
+                    ## Pub/Sub
+
+                    当有生产者生产消息，有X个消费者去消费消息时，可以考虑使用Pub/Sub<!-- .element: style="text-align: left;" -->
+
+                    - Redis不允许连接在subscribe等待消息时，还进行其它的操作
+                    - 在消费者挂掉期间，生产者发送的消息彻底丢失
+
+                    ---
+
+                    ## 事务
+
+                    - multi：事务的开始
+                    - exec：事务的执行
+                    - discard：事务的放弃
+
+                    --
+
+                    ### 原子性
+                    需要明确Redis的原子性和关系型数据库是不一样的，当事务执行中间发生失败了，后面的命令还可以继续进行。<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    ### 优化
+                    Redis的每个命令发到服务端都会经过一次网络IO，所以当我们使用事务时，可以结合pipeline一起使用，可以将多次IO优化为一次。<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    ### Watch
+
+                    先修改资源，检查资源是否被修改过：<!-- .element: style="text-align: left;" -->
+                    - 未被修改，则本次修改成功；
+                    - 已被修改，可选择重试或取消。
+
+                    ---
+
+                    先考虑一个需求：统计每个页面每天的UV数据？ <!-- .element: style="text-align: left;" -->
+
+                    不是PV!!!
+
+                    --
+
+                    使用Set统计？
+
+                    --
+
+                    ## HyperLogLog
+
+                    - 占用12KB空间
+                    
+                    Redis对HyperLogLog的存储进行了优化，在计数比较小时，它的存储空间采用稀疏矩阵存储，空间占用很小。<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    命令：<!-- .element: style="text-align: left;" -->
+                    ```
+                    PFADD key element [element ...] 
+                    PFCOUNT key [key ...] 
+                    PFMERGE destkey sourcekey [sourcekey ...] 
+                    ```
+
+                    ---
+
+                    再考虑一个需求：做一个内容推荐的需求（屏蔽已查看过的）？
+
+                    --
+
+                    使用Set过滤？
+                    
+                    --
+
+                    ## BloomFilter
+
+                    可以理解为是一个不太精确的set结构，可能会出现误判：<!-- .element: style="text-align: left;" -->
+                    - 当布隆过滤器认为某个值存在，这个值可能不存在
+                    - 当布隆过滤器认为某个值不存在，那么这个值一定不存在
+
+                    ---
+
+                    再考虑一个需求：做一个[附近的好友]需求？
+
+                    --
+
+                    ## Geo
+
+                    命令： <!-- .element: style="text-align: left;" -->
+                    ```
+                    GEOADD key longitude latitude member [longitude latitude member ...]
+                    GEOPOS key member [member ...]
+                    GEODIST key member1 member2 [unit]
+                    GEOHASH key member [member ...]
+                    GEORADIUS key longitude latitude radius m|km|ft|mi [WITHCOORD] [WITHDIST] [WITHHASH] [ASC|DESC] [COUNT count]
+                    ```
+
+                    --
+
+                    注意点：<!-- .element: style="text-align: left;" -->
+                    - Geo底层使用的zset数据结构
+                    - 单个key存储的容量限制
+                    - 按国家拆分、省份拆分等等
+
+                    ---
+
+                    # Redis 安全
+
+                    - 数据泄露与丢失
+                    - 所在主机权限被黑客获取
+                    - 人为操作失误
+
+                    --
+
+                    ### 端口安全
+
+                    Redis默认监听6379端口，很容易就会被扫描到，需要警惕Redis服务会被外网直接访问。<!-- .element: style="text-align: left;" -->
+
+                    - 设置密码
+                    - 设置监听IP
+
+                    --
+
+                    ### Lua脚本安全
+
+                    - 禁止Lua脚本由用户输入的内容生成
+                    - Redis以普通用户的身份启动
+
+                    --
+
+                    ### 指令安全
+                    - keys
+                    - flushdb、flushall
+
+                    --
+
+                    使用rename-command指令修改名称：<!-- .element: style="text-align: left;" -->
+                    - rename-command keys abckeysabc
+
+                    禁用命令：<!-- .element: style="text-align: left;" -->
+                    - rename-command flushall ""
+
+                    ---
+
+                    # Redis 开发规范
+
+                    --
+
+                    ## Key 设计
+                    ### 可读性 <!-- .element: style="text-align: left;" -->
+                    以业务名(或数据库名)为前缀，用冒号分隔<!-- .element: style="text-align: left;" -->
+                    格式：业务名：子业务名：id<!-- .element: style="text-align: left;" -->
+
+                    活动系统-人拉人红包活动-id<!-- .element: style="text-align: left;" -->
+                    ```
+                    ACTIVITY:INVITE_REDPACKET:001<!-- .element: style="text-align: left;" -->
+                    ```
+
+                    --
+
+                    ### 简洁性<!-- .element: style="text-align: left;" -->
+                    保证语义的前提下，控制key的长度。否则当key较多时，内存占用也不容忽视<!-- .element: style="text-align: left;" -->
+
+                    ### 不包含转义字符<!-- .element: style="text-align: left;" -->
+                    不包含空格、换行、单双引号以及其他转义字符<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    ## value 设计
+                    ### 拒绝大值<!-- .element: style="text-align: left;" -->
+                    - string类型尽量控制在10KB以内
+                    - hash、list、set、zset元素个数不要超过5000
+
+                    虽然redis对单个key可以缓存的对象长度能够支持的很大，但是实际使用场合一定要合理拆分过大的缓存项，1k 基本是redis性能的一个拐点。<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    ### 选择适合的数据类型<!-- .element: style="text-align: left;" -->
+                    - 错误的使用姿势：
+                    ```
+                    set user:1:name tom
+                    set user:1:age 19
+                    set user:1:favor football
+                    ```
+
+                    - 正确的使用姿势：
+                    ```
+                    hmset user:1 name tom age 19 favor football
+                    ```
+
+                    --
+
+                    ### 合理设置过期时间<!-- .element: style="text-align: left;" -->
+                    - 如果key没有设置超时时间，会导致一直占用内存。
+                    - 建议使用expire设置过期时间(条件允许可以打散过期时间，防止集中过期)，不过期的数据重点关注idletime。
+                    - 对于可以预估使用生命周期的key，应当设置合理的过期时间或在最后一次操作时进行清理
+
+                    --
+
+                    ### 避免多个应用使用一个Redis实例<!-- .element: style="text-align: left;" -->
+                    将不相干的业务拆分，减少不同业务相互操作的影响，提高请求响应速度<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    ### O(N)命令关注N的数量<!-- .element: style="text-align: left;" -->
+                    例如hgetall、lrange、smembers、zrange、sinter等。<!-- .element: style="text-align: left;" -->
+                    
+                    以上命令并非不能使用，但是需要明确N的值，有遍历的需求可以使用hscan、sscan、zscan代替。<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    ### 合理利用批操作命令<!-- .element: style="text-align: left;" -->
+                    在redis使用过程中，要正视网络往返时间，合理利用批量操作命令，减少通讯时延和redis访问频次。<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    - MSET/HMSET等都支持一次输入多个key，LPUSH/RPUSH/SADD等命令都支持一次输入多个value，也要注意每次操作数量不要过多，建议控制在500个以内；
+
+                    --
+
+                    - redis提供一个 pipeline 的管道操作模式，将多个指令汇总到队列中批量执行，可以减少tcp交互产生的时间，一般情况下能够有10%~30%不等的性能提升；
+
+                    --
+
+                    - 更快的是Lua Script模式，还可以包含逻辑。redis内嵌了 lua 解析器，可以执行lua 脚本，脚本可以通过eval等命令直接执行，也可以使用script load等方式上传到服务器端的script cache中重复使用。
+
+                    ---
+
+                    # Redis 应用
+
+                    --
+
+                    比如要修改用户的信息，需要先获取用户的信息，修改完毕之后，再存回去。<!-- .element: style="text-align: left;" -->
+
+                    出现并发时怎么办？<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    ## 分布式锁
+
+                    --
+
+                    ## 异步 & 延时任务
+
+                    - setTimeout
+                    - ScheduleService
+
+                    --
+
+                    ## list
+
+                    - rpush/lpush 
+                    - lpop/rpop => blpop/brpop
+
+                    --
+
+                    ## zset
+
+                    ```
+                    redis.zadd("delay-queue", retry_ts, value)
+                    ```
+                    ```
+                    values = redis.zrangebyscore("delay-queue", 0, time.time(), start=0, num=1)
+                    ```
+
+                    --
+
+                    记录用户一年的签到记录？
+
+                    ```
+                    set usersign:1 1
+                    set usersign:365 1
+                    ```
+
+                    --
+
+                    ## 位图
+                    ```
+                    SETBIT key offset value
+                    GETBIT key offset
+                    ```
+
+                    --
+
+                    考虑一个需求：如何控制用户一分钟最多发10个评论？
+
+                    --
+
+                    ## zset
+
+                    ```
+                    pipe.zadd(key, now_ts, now_ts)
+                    pipe.zremrangebyscore(key, 0, now_ts - period * 1000)
+                    pipe.zcard(key)
+                    pipe.expire(key, period + 1)
+                    ```
+
+                    [进阶——漏斗限流](https://juejin.im/book/5afc2e5f6fb9a07a9b362527/section/5b44aaf75188251a9f248c4c)
+
+                    ---
+
+                    ## 更多
+
+                    - [在各技术栈的使用](https://quqi.com/1/217343)
+                    - 持久化
+                    - 淘汰策略
+                    - 集群
+                    - 源码分析
+
+                    ---
+                    
+                    ## 资料
+
+                    - https://quqi.com/1/217343
+
+                    ---
+
+                    Thanks!
 
                 </script>
             </section>
