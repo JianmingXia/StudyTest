@@ -36,7 +36,7 @@
 
                     0. 为什么要使用Redis?
                     1. 缓存策略分析
-                    2. Redis 数据结构与特性
+                    2. Redis 数据结构与功能
                     3. Redis 安全
                     4. Redis 开发规范
                     5. Redis 应用
@@ -46,9 +46,9 @@
                     # 为什么要使用Redis?
 
                     - 单点问题
-                    - 性能、并发
+                    - 性能 & 并发
 
-                    Note:预加载、无失效措施、所有数据皆存于内存
+                    Note:预加载、无失效措施、所有数据皆存于内存; 受限于Mysql的处理能力
 
                     ---
 
@@ -126,7 +126,7 @@
 
                     ---
 
-                    # Redis 基础数据结构
+                    # Redis 数据结构
                     Redis所有的数据结构都是以唯一的key(string类型)作为名称，再通过唯一的key来获取对应的value。<!-- .element: style="text-align: left;" -->
                     
                     不同类型的数据结构源于value的结构。<!-- .element: style="text-align: left;" -->
