@@ -1,0 +1,703 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>reveal.js</title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/custom.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section data-markdown data-separator="^\n---\n$" data-separator-vertical="^\n--\n$">
+                <script type="text/template">
+                    # Redis
+
+                    创新研究院 & 夏见明
+
+                    ---
+
+                    0. 为什么要使用Redis?
+                    1. 缓存策略分析
+                    2. Redis 数据结构与功能
+                    3. Redis 安全
+                    4. Redis 开发规范
+                    5. Redis 应用
+
+                    ---
+
+                    # 为什么要使用Redis?
+
+                    - 单点问题
+                    - 性能 & 并发
+
+                    Note:预加载、无失效措施、所有数据皆存于内存; 受限于Mysql的处理能力
+
+                    ---
+
+                    # 缓存策略分析
+                    ## Cache Aside Pattern
+
+                    适用场景：<!-- .element: style="text-align: left;" -->
+                
+                    - 数据重要性高
+                    - 多读少写
+
+                    --
+
+                    ![Cache Aside Pattern](./images/Redis/Cache Aside-1.png) <!-- .element: style="width: 500px;" -->
+
+                    Q: 为何先标记缓存失效？
+
+                    --
+
+                    说明：<!-- .element: style="text-align: left;" -->
+                    - 读数据
+                        - 命中：从cache中取数据
+                        - 失效：从数据库中取数据，并将数据放到缓存中
+                    - 写数据
+
+                        先让缓存失效
+                        - 成功：操作数据库
+                        - 失败：直接返回
+
+                    --
+
+                    <!-- .element: style="text-align: left;" -->
+                    [canal](https://github.com/alibaba/canal)：
+                    - 通过模拟mysql slave的交互协议，将自己伪装成mysql slave
+                    - 然后通过解析mysql master推送的binlog文件
+                    - 最后再进行缓存数据的同步
+
+                    使用canal算是Cache Aside Pattern策略的加强，但使用Canal要引入Java技术栈，故暂不引入，后续可根据需要再做考虑。
+
+                    ---
+
+                    ## Write Behind Caching Pattern
+                    > Write Back
+
+                    适用场景：<!-- .element: style="text-align: left;" -->
+                    - 频写 & 数据重要性不高
+
+                    --
+
+                    说明：<!-- .element: style="text-align: left;" -->
+
+                    更新数据的时候，只更新缓存，不同步更新数据库，能够让服务器的处理能力不受Mysql性能的限制。<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    ![Cache Aside Pattern](./images/Redis/Write Back.png) <!-- .element: style="width: 500px;" -->
+
+                    --
+
+                    - 读数据
+                        - 命中：从cache中取数据
+                        - 失效：从数据库中取数据，并将数据放到缓存中
+                    - 写数据
+                        直接将数据写入缓存
+
+                        - 成功：将更新操作发到消息中间件，消息中间件负责将数据更新至数据库
+                        - 失败：直接返回
+
+                    --
+
+                    <!-- .element: style="text-align: left;" -->
+                    消息中间件是异步同步到数据库的一个解决方案，还有另外一个解决方案，是通过分析Redis的RDB/AOF文件，来实现数据同步的功能。
+
+                    工具目前发现[redis-replicator](https://github.com/leonchen83/redis-replicator)。
+
+                    ---
+
+                    # Redis 数据结构
+                    Redis所有的数据结构都是以唯一的key(string类型)作为名称，再通过唯一的key来获取对应的value。<!-- .element: style="text-align: left;" -->
+                    
+                    不同类型的数据结构源于value的结构。<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    - 字符串（String）
+                    - 字典（Hash)
+                    - 列表（List)
+                    - 集合（Set)
+                    - 有序集合（SortedSet)
+
+                    --
+
+                    - HyperLogLog
+                    - Geo
+                    - Pub/Sub
+                    - BloomFilter
+
+                    ---
+
+                    ## 字符串（String）
+                    
+                    String是Redis中最简单的数据结构。
+
+                    ![string](./images/Redis/string.png) <!-- .element: style="width: 500px;" -->
+                    
+                    --
+
+                    使用案例：<!-- .element: style="text-align: left;" -->
+                    - 缓存用户信息：将用户信息序列化成字符串，再将数据存储至String结构 
+
+                    --
+
+                    命令：<!-- .element: style="text-align: left;" -->
+                    ```
+                    SET key value [EX seconds] [PX milliseconds] [NX|XX]
+                    GET key
+                    MSET key value [key value ...]
+                    MGET key [key ...]
+                    SETEX key seconds value
+                    ...
+                    ```
+
+                    --
+
+                    Since the SET command options can replace SETNX, SETEX, PSETEX, it is possible that in future versions of Redis these three commands will be deprecated and finally removed.
+
+                    ---
+
+                    ## 字典（Hash）
+
+                    ![hash](./images/Redis/hash.png) <!-- .element: style="width: 500px;" -->
+
+                    --
+
+                    使用案例：<!-- .element: style="text-align: left;" -->
+                    - 缓存用户信息：将用户信息的每个字段单独存储，获取时可部分获取（较于String类型，一定程度上节省了流量）
+
+                    --
+
+                    命令：<!-- .element: style="text-align: left;" -->
+                    ```
+                    HSET key field value
+                    HGET key field
+                    HMSET key field value [field value ...]
+                    HMGET key field [field ...]
+                    HGETALL key
+                    HLEN key
+                    HINCRBY key field increment
+                    ...
+                    ```
+
+                    --
+
+                    Redis strings vs Redis hashes to represent JSON: efficiency?
+                    ```
+                    SET user:1 payload
+                    ```
+
+                    ```
+                    HSET user:1 username "someone"
+                    HSET user:1 location "NY"
+                    HSET user:1 bio "STRING WITH OVER 100 lines"
+                    ```
+
+                    --
+
+                    ![string_vs_hash](./images/Redis/string_vs_hash.png) <!-- .element: style="width: 500px;" -->
+
+                    [原文链接](https://stackoverflow.com/questions/16375188/redis-strings-vs-redis-hashes-to-represent-json-efficiency)
+
+                    ---
+
+                    ## 列表（List）
+
+                    ![list](./images/Redis/list.png) <!-- .element: style="width: 500px;" -->
+
+                    --
+
+                    使用案例：<!-- .element: style="text-align: left;" -->
+                    - 异步队列：将需要延迟处理的任务序列化成字符串，push到Redis的List中，由另一个线程负责处理
+
+                    --
+
+                    命令：<!-- .element: style="text-align: left;" -->
+                    ```
+                    LPUSH key value [value ...]
+                    LPOP key
+                    RPUSH key value [value ...]
+                    RPOP key
+                    RPOPLPUSH source destination
+                    LTRIM key start stop
+                    BLPOP key [key ...] timeout
+                    ...
+                    ```
+
+                    --
+
+                    O(1):<!-- .element: style="text-align: left;" -->
+                    - LPUSH
+                    - LPOP 
+                    - RPUSH
+                    - RPOP
+
+                    O(N):<!-- .element: style="text-align: left;" -->
+                    - LINSERT
+                    - LINDEX
+
+                    ---
+
+                    ## 集合（Set）
+
+                    ![set](./images/Redis/set.png) <!-- .element: style="width: 500px;" -->
+
+                    --
+
+                    使用案例：<!-- .element: style="text-align: left;" -->
+                    - 中奖池：将已中奖用户ID存储至Set，因为Set有去重功能，可以用来保证同一用户不会中奖两次
+
+                    --
+
+                    命令：<!-- .element: style="text-align: left;" -->
+                    ```
+                    SADD key member [member ...]
+                    SREM key member [member ...]
+                    SISMEMBER key member
+                    SCARD key
+                    SMEMBERS key
+                    SPOP key
+                    ...
+                    ```
+
+                    ---
+
+                    ## 有序集合（SortedSet）
+
+                    ![zset](./images/Redis/zset.png) <!-- .element: style="width: 500px;" -->
+
+                    --
+
+                    使用案例：<!-- .element: style="text-align: left;" -->
+                    - 粉丝列表：value是粉丝的ID，score是关注的时间——可以对粉丝列表按关注进行排序
+                    - 成绩表：value是学生的ID，score是成绩——可以对学生按成绩进行排序
+
+                    --
+
+                    命令：<!-- .element: style="text-align: left;" -->
+                    ```
+                    ZADD key score member [[score member] [score member] ...]
+                    ZCARD key
+                    ZREM key member [member ...]
+                    ZCOUNT key min max
+                    ZSCORE key member
+                    ZRANGE key start stop [WITHSCORES]
+                    ZREVRANGE key start stop [WITHSCORES]
+                    ZRANGEBYSCORE key min max [WITHSCORES] [LIMIT offset count]
+                    ...
+                    ```
+
+                    ---
+
+                    ## 容器型数据结构的通用规则
+                    - create if not exists：比如lpush操作，如果列表不存在，那就创建一个，再进行lpush操作
+                    - drop if no elements：比如lpop操作，如果列表中没有元素，那数据结构自动删除，内存被回收
+
+                    ---
+
+                    ## [Info](https://redis.io/commands/info)
+
+                    - server: General information about the Redis server
+                    - clients: Client connections section
+                    - memory: Memory consumption related information
+                    - persistence: RDB and AOF related information
+                    - stats: General statistics
+                    - replication: Master/slave replication information
+                    - cpu: CPU consumption statistics
+                    - commandstats: Redis command statistics
+                    - cluster: Redis Cluster section
+                    - keyspace: Database related statistics
+
+                    ---
+
+                    ## Pub/Sub
+
+                    当有订阅者对一个或多个频道感兴趣，只需订阅感兴趣的频道，就可以接受到对应的消息，不需要知道什么样的发布者发布的。<!-- .element: style="text-align: left;" -->
+
+                    ```
+                    SUBSCRIBE channel [channel ...]
+                    UNSUBSCRIBE [channel [channel ...]]
+                    PUBLISH channel message
+                    ```
+
+                    --
+
+                    缺陷：<!-- .element: style="text-align: left;" -->
+                    - Redis不允许连接在subscribe等待消息时，还进行其它的操作
+                    - 在消费者挂掉期间，生产者发送的消息彻底丢失
+
+                    ---
+
+                    ## 事务
+
+                    - multi：事务的开始
+                    - exec：事务的执行
+                    - discard：事务的放弃
+
+                    --
+
+                    ### 原子性
+                    事务的原子性——全部成功 or 全部失败。<!-- .element: style="text-align: left;" -->
+
+                    在Redis事务执行中，如果有命令失败了，不会影响后续的命令——能保证的是当前执行的事务不会被其他命令打断。<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    ### 优化
+                    Redis的每个命令发到服务端都会经过一次网络IO，所以当我们使用事务时，可以结合pipeline一起使用，可以将多次IO优化为一次。<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    ### Watch
+                    
+                    ```
+                    WATCH key [key ...]
+                    ```
+
+                    --
+
+                    在事务开始之前执行Watch指令，在服务器收到Exec指令执行时，会检查关注的key是否被修改过（check-and-set）：<!-- .element: style="text-align: left;" -->
+                    - 未被修改，执行本次事务；
+                    - 已被修改，此次事务执行失败，可选择重试或取消。
+
+                    ---
+
+                    先考虑一个需求：统计每个页面每天的UV数据？ <!-- .element: style="text-align: left;" -->
+
+                    不是PV!!!
+
+                    --
+
+                    使用Set统计？
+
+                    --
+
+                    ## HyperLogLog
+
+                    HyperLogLog提供了不精确的去重计数方案，标准误差是 0.81%。<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    命令：<!-- .element: style="text-align: left;" -->
+                    ```
+                    PFADD key element [element ...] 
+                    PFCOUNT key [key ...] 
+                    PFMERGE destkey sourcekey [sourcekey ...] 
+                    ```
+
+                    --
+
+                    - 占用12k空间——不适合存储单个用户相关的数据
+
+                    Redis对HyperLogLog的存储进行了优化，在计数比较小时，它的存储空间采用稀疏矩阵存储，空间占用很小。<!-- .element: style="text-align: left;" -->
+
+                    ---
+
+                    再考虑一个需求：做一个内容推荐的需求（屏蔽已查看过的）？
+
+                    --
+
+                    使用Set过滤？
+                    
+                    --
+
+                    ## BloomFilter
+
+                    可以理解为是一个不太精确的set结构，可能会出现误判：<!-- .element: style="text-align: left;" -->
+                    - 当布隆过滤器认为某个值存在，这个值可能不存在
+                    - 当布隆过滤器认为某个值不存在，那么这个值一定不存在
+
+                    ---
+
+                    再考虑一个需求：做一个[附近的好友]需求？
+
+                    --
+
+                    ## Geo
+
+                    业界通用的地理位置距离排序算法是GeoHash，Redis使用的也是GeoHash算法。<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    命令： <!-- .element: style="text-align: left;" -->
+                    ```
+                    GEOADD key longitude latitude member [longitude latitude member ...]
+                    GEOPOS key member [member ...]
+                    GEODIST key member1 member2 [unit]
+                    GEOHASH key member [member ...]
+                    GEORADIUS key longitude latitude radius m|km|ft|mi [WITHCOORD] [WITHDIST] [WITHHASH] [ASC|DESC] [COUNT count]
+                    ...
+                    ```
+
+                    --
+
+                    注意点：<!-- .element: style="text-align: left;" -->
+                    - Geo内部结构实际上是zset
+                    - 单个key存储的容量限制
+                    - 按国家拆分、省份拆分等等
+
+                    ---
+
+                    # Redis 安全
+
+                    - 数据泄露与丢失
+                    - 所在主机权限被黑客获取
+                    - 人为操作失误
+
+                    --
+
+                    ### 端口安全
+
+                    Redis默认监听6379端口，很容易就会被扫描到，需要警惕Redis服务会被外网直接访问。<!-- .element: style="text-align: left;" -->
+
+                    - 设置密码
+                    - 设置监听IP
+
+                    --
+
+                    ### Lua脚本安全
+
+                    - 禁止Lua脚本由用户输入的内容生成
+                    - Redis以普通用户的身份启动
+
+                    --
+
+                    ### 指令安全
+                    - keys
+                    - flushdb、flushall
+
+                    --
+
+                    使用rename-command指令修改名称：<!-- .element: style="text-align: left;" -->
+                    - rename-command keys abckeysabc
+
+                    禁用命令：<!-- .element: style="text-align: left;" -->
+                    - rename-command flushall ""
+
+                    ---
+
+                    # Redis 开发规范
+
+                    --
+
+                    ## Key 设计
+                    ### 可读性 <!-- .element: style="text-align: left;" -->
+                    以业务名(或数据库名)为前缀，用冒号分隔。<!-- .element: style="text-align: left;" -->
+
+                    业务名:子业务名:id => 活动系统:人拉人红包活动:id<!-- .element: style="text-align: left;" -->
+
+                    ```
+                    ACTIVITY:INVITE_REDPACKET:1
+                    ```
+
+                    --
+
+                    ### 简洁性<!-- .element: style="text-align: left;" -->
+                    保证语义的前提下，控制key的长度。<!-- .element: style="text-align: left;" -->
+
+                    否则当key较多时，内存占用也不容忽视。<!-- .element: style="text-align: left;" -->
+
+                    ### 不包含转义字符<!-- .element: style="text-align: left;" -->
+                    不包含空格、换行、单双引号以及其他转义字符。<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    ## value 设计
+                    ### 拒绝大值<!-- .element: style="text-align: left;" -->
+                    - string类型尽量控制在10KB以内
+                    - hash、list、set、zset元素个数不要超过5000
+
+                    --
+
+                    虽然Redis对单个key可以缓存的对象长度能够支持的很大，但是实际使用场合一定要合理拆分过大的缓存项，1k 基本是Redis性能的一个拐点。<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    ### 选择适合的数据类型<!-- .element: style="text-align: left;" -->
+                    - 错误的使用姿势：
+                    ```
+                    set user:1:name tom
+                    set user:1:age 19
+                    set user:1:favor football
+                    ```
+
+                    - 正确的使用姿势：
+                    ```
+                    hmset user:1 name tom age 19 favor football
+                    ```
+
+                    --
+
+                    ### 合理设置过期时间<!-- .element: style="text-align: left;" -->
+                    - 如果key没有设置超时时间，会导致一直占用内存
+                    - 建议使用expire设置过期时间(条件允许可以打散过期时间，防止集中过期)，不过期的数据重点关注idletime
+                    - 对于可以预估使用生命周期的key，应当设置合理的过期时间或在最后一次操作时进行清理
+
+                    --
+
+                    ### 避免多个应用使用一个Redis实例<!-- .element: style="text-align: left;" -->
+                    将不相干的业务拆分，减少不同业务相互操作的影响，提高请求响应速度<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    ### O(N)命令关注N的数量<!-- .element: style="text-align: left;" -->
+                    例如hgetall、lrange、smembers、zrange、sinter等。<!-- .element: style="text-align: left;" -->
+                    
+                    以上命令并非不能使用，但是需要明确N的值，有遍历的需求可以使用hscan、sscan、zscan代替。<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    ### 合理利用批操作命令<!-- .element: style="text-align: left;" -->
+                    在Redis使用过程中，要正视网络往返时间，合理利用批量操作命令，减少通讯时延和Redis访问频次。<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    - MSET/HMSET/LPUSH/RPUSH/SADD等命令支持一次操作多个key或value，同时注意每次操作数量不要过多，建议控制在500个以内
+
+                    --
+
+                    - Redis提供了pipeline——管道，将多个指令汇总到队列中批量执行，一般情况下能够有10%~30%不等的性能提升；
+
+                    --
+
+                    - Redis提供了Lua Script，还可以包含逻辑。脚本可以通过eval等命令直接执行，也可以使用SCRIPT LOAD等方式上传到服务器端的script cache中重复使用。
+
+                    ---
+
+                    # Redis 应用
+
+                    --
+
+                    比如要修改用户的信息，需要先获取用户的信息，修改完毕之后，再存回去。<!-- .element: style="text-align: left;" -->
+
+                    出现并发时怎么办？<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    ## 分布式锁
+
+                    ```
+                    SET key value [EX seconds] [PX milliseconds] [NX|XX]
+                    ```
+
+                    --
+
+                    ## 异步 & 延时任务
+
+                    - setTimeout
+                    - ScheduleService
+
+                    --
+
+                    ### list<!-- .element: style="text-align: left;" -->
+
+                    - rpush/lpush 
+                    - lpop/rpop => blpop/brpop
+
+                    --
+
+                    ### zset<!-- .element: style="text-align: left;" -->
+
+                    ```
+                    redis.zadd("delay-queue", retry_ts, value)
+                    ```
+                    ```
+                    values = redis.zrangebyscore("delay-queue", 0, time.time(), start=0, num=1)
+                    ```
+
+                    --
+
+                    记录用户一年的签到记录？
+
+                    ```
+                    set usersign:1 1
+                    set usersign:365 1
+                    ```
+
+                    --
+
+                    ### 位图
+                    ```
+                    SETBIT key offset value
+                    GETBIT key offset
+                    ```
+
+                    --
+
+                    如何控制用户一分钟最多发10个评论？
+
+                    --
+
+                    ### 使用zset<!-- .element: style="text-align: left;" -->
+
+                    ```
+                    pipe.zadd(key, now_ts, now_ts)
+                    pipe.zremrangebyscore(key, 0, now_ts - period * 1000)
+                    pipe.zcard(key)
+                    pipe.expire(key, period + 1)
+                    ```
+
+                    [进阶——漏斗限流](https://juejin.im/book/5afc2e5f6fb9a07a9b362527/section/5b44aaf75188251a9f248c4c)
+
+                    ---
+
+                    ## 更多 & 资料
+
+                    - [各技术栈的使用](https://quqi.com/1/217343)
+                    - 持久化
+                    - 回收策略
+                    - 缓存雪崩、穿透
+                    - 集群
+                    - 源码分析
+                    - https://quqi.com/1/217343
+
+                    Note: 缓存预热、更新、降级
+
+                    ---
+
+                    Thanks!
+
+                </script>
+            </section>
+        </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+        // More info about config & dependencies:
+        // - https://github.com/hakimel/reveal.js#configuration
+        // - https://github.com/hakimel/reveal.js#dependencies
+        Reveal.initialize({
+            dependencies: [
+                { src: 'plugin/markdown/marked.js' },
+                { src: 'plugin/markdown/markdown.js' },
+                { src: 'plugin/notes/notes.js', async: true },
+                { src: 'plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } }
+            ]
+        });
+    </script>
+</body>
+
+</html>
