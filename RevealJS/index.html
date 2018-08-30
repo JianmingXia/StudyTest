@@ -55,9 +55,13 @@
                     --
 
                     - 开发效率更高
-                    - 有市场业绩证明
-                    - 支持跨平台
+                    - 市场业绩证明
+                    - 跨平台高性能
                     - 未来还会更好
+
+                    --
+
+                    ![Fancy3D](./images/CGDC/fancy3d.png) <!-- .element: style="width: 500px;" -->
 
                     ---
 
@@ -82,6 +86,10 @@
                     
                     所谓能量守恒，简单的理解就是镜面反射出去的光与漫反射出去的光，加起来总量不能超过入射的光量，即diffuse+specular不能大于1。<!-- .element: style="text-align: left;" -->
 
+                    ![1](./images/CGDC/1.png) <!-- .element: style="width: 500px;" -->
+
+                    Note:能量既不会凭空产生，也不会凭空消失，它只会从一种形式转化为另一种形式，或者从一个物体转移到其它物体，而能量的总量保持不变。
+                    
                     --
 
                     优点：<!-- .element: style="text-align: left;" -->
@@ -89,6 +97,8 @@
                         - Substance Painter
                     - 渲染效果更加真实
                         - 在任何光照环境都能表现出正确的结果
+
+                    Note:次时代三维贴图软件
 
                     --
 
@@ -117,7 +127,10 @@
                         - 地形：平地、大海、高山、河流等
                         - 地貌：草原、沙漠、丛林、沼泽等
                     - 光照计算
-                    - 数据存储——只有玩家更改过的Chunk才会保存
+                    - 数据存储
+                    
+
+                    Note:光照计算:天空直接照射的物体为光照值最高，并向周围递减；数据存储:只有玩家更改过的Chunk才会保存
 
                     --
 
@@ -126,31 +139,30 @@
                     - 可持续进行的乐趣获得
                     - 内容的流通、成就感
 
-                    ---
+                    --
 
-                    沙盒游戏的拓展：<!-- .element: style="text-align: left;" -->
-                    - 更小的体素，和原子一样小
-                    - 更大的世界，和地球一样大
-                    - 打通现实与虚拟的桥梁
-                        - 交互——数据
-                        - 实体——空间
-                        - 价值——区块链
+                    其它部分：<!-- .element: style="text-align: left;" -->
+                    - 逻辑电路系统
+                        - 输入——开关类、探测器
+                        - 逻辑——与门、非门、或门
+                        - 输出——电灯、LCD、烟花、音响、马达、列车等
+                    - 动作器系统——包含三个方式的动作：转动、滑动、推动
+                    - 体素物理系统
 
                     ---
 
                     ## 自动化测试
-                    ### 背景介绍
+                    ### 《孤岛惊魂5》背景介绍
 
-                    背景：<!-- .element: style="text-align: left;" -->
                     - 大型游戏
                         - 40 种动物
                         - 15000 个动画
                         - Systemic AI
-                    - 人工测试——不切实际
+                    
+                    人工测试？？？<!-- .element: style="text-align: left;" -->
 
                     --
 
-                    目标：<!-- .element: style="text-align: left;" -->
                     - 成本效益
                     - 快速迭代
 
@@ -162,9 +174,13 @@
                     - 专用电脑
                     - 专用的工具程序员
 
+                    --
+
+                    ![2](./images/CGDC/2.png) <!-- .element: style="width: 500px;" -->
+
                     ---
 
-                    ### AI 测试地图
+                    ### AI 测试
 
                     背景：<!-- .element: style="text-align: left;" -->
                     - 40 种动物
@@ -175,20 +191,15 @@
 
                     --
 
-                    如何做：<!-- .element: style="text-align: left;" -->
-                    - 每日电子邮件报告（3份）
-                        - Excel 总结 + 细节
-                    - 自定义测试水平
-                        - 导航
-                        - 实战
+                    ![3](./images/CGDC/3.png) <!-- .element: style="width: 400px;" -->
 
                     --
 
-                    ### AI 测试地图—分析
+                    ### AI 测试—分析
                     优点：<!-- .element: style="text-align: left;" -->
-                    - Identify AI regressions early
                     - 每日三份报告
-                    - \>700 AI features
+                    - \>700 AI 特征
+                    - Identify AI regressions early
 
                     --
 
@@ -212,17 +223,13 @@
 
                     --
 
-                    目标：<!-- .element: style="text-align: left;" -->
-                    - 自动测试 & 分析
-                    - overview for management
-                    - 为团队成员提供可操作的细节
+                    ![4](./images/CGDC/4.png) <!-- .element: style="width: 400px;" -->
 
                     --
 
                     如何做：<!-- .element: style="text-align: left;" -->
 
                     - 每日三份报告
-                    - Excel workbook
                     - 10分钟处理15000+动画
                     - 自定义C#脚本，20个特殊测试
                         - 缺失数据
@@ -253,9 +260,11 @@
                     未来：<!-- .element: style="text-align: left;" -->
 
                     - 自动修正
-                    - 在输出时，为个别动画师提供小&个性化的报告
-                        - 学会如何通过项目的其余部分去避免错误
+                    - 在输出时，为个别动画师提供小 & 个性化的报告
+                        - 学会去避免错误，举一反三
                         - 链接到Confluence，如何进行FAQ
+
+                    Note:Confluence 供您用于与团队成员共同创建、整理和讨论工作
 
                     ---
 
@@ -319,8 +328,6 @@
                     ---
 
                     ## 总结
-
-                    测试：<!-- .element: style="text-align: left;" -->
 
                     - 自动化测试
                         - 节省人力
