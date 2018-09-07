@@ -253,3 +253,7 @@ Abuelita对 “No music” 的家规要求很严格，当Miguel对着空瓶子�
 （As the business grew, so did her family.）
 
 而这位妈妈，就是Miguel的great-great-grandmother, Imelda奶奶，Mamá Coco的妈妈。
+
+## 今日彩蛋
+
+阅读最核心的能力是什么？
