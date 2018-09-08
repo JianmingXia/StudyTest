@@ -11,3 +11,7 @@
 - Endeavor to see the good in every situation.(努力在每个情况下看到好的一面)
 
 - What is past is prologue.(过去即是序言)
+
+- We accept the love we think we deserve.(我们会接受自己认为应得的爱)
+
+- We make a living by what we get, but we make a life by what we give.(我们依靠获取来生存，但我们靠给予来生活)
