@@ -15,3 +15,9 @@
 - We accept the love we think we deserve.(我们会接受自己认为应得的爱)
 
 - We make a living by what we get, but we make a life by what we give.(我们依靠获取来生存，但我们靠给予来生活)
+
+- The most important thing is not to despair.(最重要的是，不要失去希望)
+
+- Without music, life would be a mistake.(没有音乐的生活是一场错误)
+
+- The music is all around us. All you have to do is listening.(音乐无处不在，而你只要去聆听)
