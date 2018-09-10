@@ -21,3 +21,5 @@
 - Without music, life would be a mistake.(没有音乐的生活是一场错误)
 
 - The music is all around us. All you have to do is listening.(音乐无处不在，而你只要去聆听)
+
+- The pain of parting is nothing to the joy of meeting again.(分离的痛苦比不上重逢的喜悦)
