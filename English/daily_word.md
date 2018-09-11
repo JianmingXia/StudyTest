@@ -18,3 +18,14 @@
 
 ### Answer
 #作业#"No one gets blisters when they wear my shoes," Abuelita proudly announces.When I see the sentence, I understand mama Abuelita. When I finish the work perfect in working, I feel so proud and I can't help to share it with my colleague. I'm the best programmer.
+
+## Day6
+### Question
+第五天和第六天讲的是coco的故事。
+
+1、请总结一下这两章讲了coco什么事情
+2、你对coco这个角色的理解
+
+中英文皆可。
+
+发言格式：#coco#+总结+个人理解
