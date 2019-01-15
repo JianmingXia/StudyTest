@@ -3,7 +3,7 @@ var fs = require("fs");
 var archiver = require("archiver");
 
 // create a file to stream archive data to.
-var output = fs.createWriteStream(__dirname + "/example.zip");
+var output = fs.createWriteStream(__dirname + "/errorEventFired.zip");
 var archive = archiver("zip", {
   zlib: { level: 9 } // Sets the compression level.
 });
@@ -26,6 +26,7 @@ output.on("end", function() {
 
 // good practice to catch warnings (ie stat failures and other non-blocking errors)
 archive.on("warning", function(err) {
+  console.log(err);
   if (err.code === "ENOENT") {
     // log warning
   } else {
@@ -36,38 +37,15 @@ archive.on("warning", function(err) {
 
 // good practice to catch this error explicitly
 archive.on("error", function(err) {
+  console.log(err);
   throw err;
 });
 
 // pipe archive data to the file
 archive.pipe(output);
 
-// append a file from stream
-// var file1 = __dirname + "/file1.txt";
-// archive.append(fs.createReadStream(file1), { name: "file1.txt" });
-
-// // append a file from string
-// archive.append("string cheese!", { name: "file2.txt" });
-
-// // append a file from buffer
-// var buffer3 = Buffer.from("buff it!");
-// archive.append(buffer3, { name: "file3.txt" });
-
-// // append a file
-// archive.file("file1.txt", { name: "xxxx/file4.txt" });
-// archive.append(fs.createReadStream(file1), { name: "xxxx/是的发生file1.txt" });
-
 archive.append("", { name: "sdffsdfsd/" });
 
-// append files from a sub-directory and naming it `new-sourceFiles` within the archive
-// archive.directory("sourceFiles/", "new-sourceFiles");
-
-// // append files from a sub-directory, putting its contents at the root of archive
-// archive.directory("sourceFiles/", false);
-
-// // append files from a glob pattern
-// archive.glob("sourceFiles/*.txt");
-
-// finalize the archive (ie we are done appending files but streams have to finish yet)
-// 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
 archive.finalize();
+
+archive.append("", { name: "sdffsdfsd/" });

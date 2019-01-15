@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "archiver": "^3.0.0",
+    "pump": "^3.0.0"
+  }
+}
