@@ -38,7 +38,7 @@ archive.on("warning", function(err) {
 // good practice to catch this error explicitly
 archive.on("error", function(err) {
   console.log(err);
-  throw err;
+//   throw err;
 });
 
 // pipe archive data to the file
