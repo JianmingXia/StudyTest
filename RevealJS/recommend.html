@@ -1,0 +1,244 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title> 杀熟杀豪 &amp; 互联网推荐 </title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/custom.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section data-markdown data-separator="^\n---\n$" data-separator-vertical="^\n--\n$">
+                <script type="text/template">
+                    # 杀熟杀豪 &amp; 互联网推荐
+
+                    技术部 & 夏见明
+
+                    ---
+
+                    0. 协同过滤
+                    1. 基于内容过滤
+                    2. 相似性推荐
+                    3. 个性化推荐
+                    4. 彩蛋
+
+                    ---
+
+                    ## 协同过滤（Collaborative Filtering）
+                    协同过滤（英语：Collaborative Filtering）：简单来说是利用某兴趣相投、拥有共同经验之群体的喜好来推荐用户感兴趣的信息
+
+                    --
+
+                    ### 商品推荐
+                    | 用户/商品 | 0 | 1 | 2 | 3 | 4 | 5 | ... |
+                    | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+                    | A | ✔️ | ✔️ | ✔️ |  |  |  |  |
+                    | B | ✔️ |  | ✔️ |  | ✔️ |  |  |
+                    | C | ✔️ | ✔️ | ✔️ | ✔️ |  | ✔️ |  |
+                    | D | ✔️ | ✔️ | ✔️ |  |  | ✔️ |  |
+                    | ... |  |  |  |  |  |  |  |
+
+                    --
+
+                    ### 步骤
+                    * 找到 A 的特征
+                    * 找到与A 的 特征相符的群体
+                    * 统计这些用户的其它特征——推送给 A
+
+                    --
+
+                    | 用户/商品 | 0 | 1 | 2 | 3 | 4 | 5 | ... |
+                    | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+                    | A | ✔️ | ✔️ | ✔️ |  |  |  |  |
+                    | C | ✔️ | ✔️ | ✔️ | ✔️ |  | ✔️ |  |
+                    | D | ✔️ | ✔️ | ✔️ |  |  | ✔️ |  |
+                    | B | ✔️ |  | ✔️ |  | ✔️ |  |  |
+                    | ... |  |  |  |  |  |  |  |
+
+                    ---
+
+                    ## 基于内容的推荐（Content-based Recommendation）
+                    通过用户历史感兴趣的信息，抽象信息内容共性，根据内容共性推其他信息
+
+                    --
+
+                    ### 职位推荐
+                    如何给一个求职者推荐岗位
+
+                    --
+
+                    ### 步骤
+                    * 找到用户历史感兴趣的岗位
+                    * 抽象历史岗位的共性
+                    * 根据内容共性进行推荐
+
+                    --
+
+                    ### 举个栗子
+                    | 岗位 | 地点 | 薪资 | 经验 | 学历 | ... |
+                    | :---: | :---: | :---: | :---: | :---: | :---: |
+                    | 程序员 | 杭州 | 10K | 1年 | 本科 |  |
+                    | 程序员 | 杭州 | 15K | 3年 | 本科 |  |
+                    | 程序员 | 杭州 | 12K | 无要求 | 无要求 |  |
+
+                    --
+
+                    #### 抽象共性
+                    程序员、杭州、薪资10K+——并进行推荐
+
+                    ---
+
+                    ## 思考一个问题
+                    **协同过滤** 和 **基于内容推荐** 都需要用户的历史信息
+
+                    ---
+
+                    ## 相似性推荐
+                    对于一个新用户（比如电影网站），在用户看了一个电影后，如何推荐相似的电影给用户
+
+                    --
+
+                    ### 先看一个问题
+                    如何在二维空间内找到离某个点距离最近的N个点
+
+                    ```
+                    distance = (x1-xi)^2 + (y1-yi)^2
+                    ```
+
+                    --
+
+                    ### 那电影呢
+                    * 导演
+                    * 类型
+                    * 男主
+                    * 女主
+                    * 男配
+                    * 女配
+                    * 地区
+                    * 语言
+                    * 时长
+
+                    重新定义 **距离函数**，计算每个维度的分值
+
+                    --
+
+                    ### 需要注意的点
+                    * 不是个性化推荐（同样的新用户在看了同一部电影后，推荐的内容一样）
+                    * 每个维度的权重不一样
+                    * 计算公式 & 维度可以通过机器学习训练
+
+                    ---
+
+                    ## 个性化推荐
+                    * 相同起点、相同终点——两个手机打车价格不一样
+                    * 相同起点、相同终点——两个手机机票价格不一样
+
+                    个性化推荐如何实现？
+
+                    --
+
+                    ### 用户分级
+                    对用户进行分级，不同类型的用户会有不同的补贴、定价、营销策略等<!-- .element: style="text-align: left;" -->
+
+                    以网约车为例，把用户分为 待拉新用户、首单用户、老用户<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    #### 待拉新用户
+                    * 竞品：大额优惠券营销
+                    * 竞品重合：普通优惠券营销
+                    * 低频用户：长时间尝试唤醒
+
+                    --
+
+                    #### 首单用户
+                    * 大额优惠
+
+                    --
+
+                    #### 老用户
+                    * 2单用户：降低优惠券试探
+                    * 3单用户：再次降低优惠券试探
+                    * 疑似粘性用户：随机优惠券试探
+                    * 强粘性：意思意思
+
+                    --
+
+                    #### 结果
+                    就如上述说过的相同的情况下：新手便宜 & 熟客贵
+
+                    --
+
+                    ### 个性化推荐
+                    **对用户的历史行为进行分析，抽象用户的标签**。<!-- .element: style="text-align: left;" -->
+                    
+                    针对不同标签的用户进行不同的补贴、定价、营销策略<!-- .element: style="text-align: left;" -->
+
+                    比如网约车可以分析的特征有：<!-- .element: style="text-align: left;" -->
+
+                    --
+
+                    #### 一个土豪
+                    * 有优惠券也不会使用
+                    * 等待 30 秒没人接单就加价
+                    * 等待 60 秒没人接单就专车
+
+                    --
+
+                    #### 一个diao丝
+                    * 没有优惠券就不打车
+                    * 从来不加价
+                    * 从不打专车；高峰期也不打车
+
+                    ---
+
+                    ## 留一个彩蛋
+
+                    * **把啤酒放在尿布旁，有助于提升啤酒销售量**
+
+                    ---
+
+                    Thanks!
+
+                </script>
+            </section>
+        </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+        // More info about config & dependencies:
+        // - https://github.com/hakimel/reveal.js#configuration
+        // - https://github.com/hakimel/reveal.js#dependencies
+        Reveal.initialize({
+            dependencies: [
+                { src: 'plugin/markdown/marked.js' },
+                { src: 'plugin/markdown/markdown.js' },
+                { src: 'plugin/notes/notes.js', async: true },
+                { src: 'plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } }
+            ]
+        });
+    </script>
+</body>
+
+</html>
